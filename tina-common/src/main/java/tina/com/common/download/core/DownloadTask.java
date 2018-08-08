@@ -14,7 +14,7 @@ import tina.com.common.download.DownloadService;
 import tina.com.common.download.entity.DownloadInfo;
 import tina.com.common.download.entity.DownloadStatus;
 import tina.com.common.download.entity.ThreadInfo;
-import tina.com.common.download.utils.DownloadDataConfig;
+import tina.com.common.download.utils.DownloadConfig;
 import tina.com.common.download.utils.Trace;
 
 /**
@@ -207,7 +207,7 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
 //        final List<ThreadInfo> threadInfos = mDBManager.getThreadInfos(mTag, mRequest.getPackageName(), mRequest.getVersionCode());
         final List<ThreadInfo> threadInfos = new ArrayList<>();
         if (threadInfos.isEmpty()) {
-            final int threadNum = DownloadDataConfig.getInstance().getThreadNum();
+            final int threadNum = DownloadConfig.getInstance().getThreadNum();
             for (int i = 0; i < threadNum; i++) {
                 // calculate average
                 final long average = length / threadNum;

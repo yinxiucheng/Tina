@@ -5,7 +5,7 @@ import android.os.Environment;
 
 import java.io.File;
 
-import tina.com.common.download.utils.DownloadDataConfig;
+import tina.com.common.download.utils.DownloadConfig;
 import tina.com.common.http.utils.Utils;
 
 /**
@@ -25,13 +25,13 @@ public class TinaApplication extends Application {
 
     private void initDownloader() {
 //        DownloadDataConfig configuration = new DownloadDataConfig();
-        DownloadDataConfig.getInstance().setMaxThreadNum(10);
-        DownloadDataConfig.getInstance().setThreadNum(3);
+        DownloadConfig.getInstance().setMaxThreadNum(10);
+        DownloadConfig.getInstance().setThreadNum(3);
     }
 
     //设置下载路径
     public static void setDownloadDir(){
         File mDownloadDir = new File(Environment.getExternalStorageDirectory(), "download");
-        DownloadDataConfig.getInstance().setDownLoadPath(mDownloadDir.getPath(), true);
+        DownloadConfig.getInstance().setDownLoadPath(mDownloadDir.getPath(), true);
     }
 }

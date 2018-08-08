@@ -9,6 +9,7 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Executor;
@@ -17,10 +18,12 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import tina.com.common.download.core.DownloadTask;
 import tina.com.common.download.core.Downloader;
+import tina.com.common.download.data.DBController;
 import tina.com.common.download.entity.DownloadInfo;
 import tina.com.common.download.entity.DownloadStatus;
 import tina.com.common.download.observer.DataChanger;
 import tina.com.common.download.utils.Constants;
+import tina.com.common.download.utils.DownloadConfig;
 import tina.com.common.download.utils.DownloadUtils;
 import tina.com.common.http.utils.Utils;
 
@@ -33,8 +36,6 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
     private static final String TAG = DownloadService.class.getSimpleName();
 
     private static final int MAX_QUE_LENGTH = 2;
-
-    private int queLength;
 
     public static final int NOTIFY_DOWNLOADING = 1;
 
@@ -59,6 +60,10 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
 
     private LinkedBlockingDeque<DownloadInfo> mQueue = new LinkedBlockingDeque<>();
 
+    private DataChanger mDataChanger;
+
+    private DBController mDBController;
+
     Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -78,7 +83,7 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
                 if (downloadInfo.status == DownloadStatus.COMPLETED){
                     mDownloadingTaskList.remove(downloadInfo.getUrl());
                 }
-                DataChanger.getInstance(Utils.getContext()).postStatus(downloadInfo);
+                mDataChanger.postStatus(downloadInfo);
             }
         }
     };
@@ -135,13 +140,13 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
 
     public static void intentPauseAll(Context context) {
         Intent intent = new Intent(context, DownloadService.class);
-        intent.putExtra(KEY_ACTION_DOWN, Constants.ACTION_CANCEL);
+        intent.putExtra(KEY_ACTION_DOWN, Constants.ACTION_PAUSE_ALL);
         context.startService(intent);
     }
 
     public static void intentRecoverAll(Context context) {
         Intent intent = new Intent(context, DownloadService.class);
-        intent.putExtra(KEY_ACTION_DOWN, Constants.ACTION_CANCEL);
+        intent.putExtra(KEY_ACTION_DOWN, Constants.ACTION_RECVOER_ALL);
         context.startService(intent);
     }
 
@@ -157,40 +162,78 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
     public void onCreate() {
         super.onCreate();
         executor = Executors.newCachedThreadPool();
+        mDataChanger = DataChanger.getInstance(Utils.getContext());
+        mDBController = DBController.getInstance();
+        initalizeDownload();
+    }
+
+    private void initalizeDownload() {
+        ArrayList<DownloadInfo> mDownloadEtries = mDBController.queryAll();
+        if (mDownloadEtries != null) {
+            for (DownloadInfo downloadInfo : mDownloadEtries) {
+                if (downloadInfo.status == DownloadStatus.DOWNLOADING || downloadInfo.status == DownloadStatus.WAITING) {
+//                    TODO add a config if need to recover download
+                    if (DownloadConfig.getInstance().isRecoverDownloadWhenStart()) {
+                        if (downloadInfo.isAcceptRanges()){
+                            downloadInfo.status = DownloadStatus.PAUSED;
+                        }else {
+                            downloadInfo.status = DownloadStatus.IDLE;
+                            downloadInfo.reset();
+                        }
+                        addDownloadQueue(downloadInfo);
+                    } else {
+                        if (downloadInfo.isAcceptRanges()){
+                            downloadInfo.status = DownloadStatus.PAUSED;
+                        }else {
+                            downloadInfo.status = DownloadStatus.IDLE;
+                            downloadInfo.reset();
+                        }
+                        mDBController.newOrUpdate(downloadInfo);
+                    }
+                }
+                mDataChanger.addToOperatedEntryMap(downloadInfo.id, downloadInfo);
+            }
+        }
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (null != intent) {
             int action = intent.getIntExtra(KEY_ACTION_DOWN, -1);
-            String url = intent.getStringExtra(EXTRA_TAG);
             DownloadInfo downloadInfo = (DownloadInfo) intent.getSerializableExtra(EXTRA_DOWNLOAD_INFO);
-            switch (action) {
-                case Constants.ACTION_DOWNLOAD:
-                    addDownloadQueue(downloadInfo);
-                    break;
-                case Constants.ACTION_PAUSE:
-                    pause(downloadInfo);
-                    break;
-                case Constants.ACTION_RESUME:
-                    resume(downloadInfo);
-                    break;
-                case Constants.ACTION_CANCEL:
-                    cancle(downloadInfo);
-                    break;
-                case Constants.ACTION_PAUSE_ALL:
-                    pauseAll();
-                    break;
-                case Constants.ACTION_RECVOER_ALL:
-                    recoverAll();
-                    break;
-                case Constants.ACTION_CANCEL_ALL:
-                    cancelAll();
-                    break;
-                default:
+            if (downloadInfo != null && mDataChanger.containsDownloadEntry(downloadInfo.tag)) {
+                downloadInfo = mDataChanger.queryDownloadEntryById(downloadInfo.tag);
             }
+            doAction(action, downloadInfo);
         }
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    private void doAction(int action, DownloadInfo downloadInfo){
+        switch (action) {
+            case Constants.ACTION_DOWNLOAD:
+                addDownloadQueue(downloadInfo);
+                break;
+            case Constants.ACTION_PAUSE:
+                pause(downloadInfo);
+                break;
+            case Constants.ACTION_RESUME:
+                resume(downloadInfo);
+                break;
+            case Constants.ACTION_CANCEL:
+                cancle(downloadInfo);
+                break;
+            case Constants.ACTION_PAUSE_ALL:
+                pauseAll();
+                break;
+            case Constants.ACTION_RECVOER_ALL:
+                recoverAll();
+                break;
+            case Constants.ACTION_CANCEL_ALL:
+                cancelAll();
+                break;
+            default:
+        }
     }
 
     private void pause(DownloadInfo downloadInfo) {
@@ -200,7 +243,7 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
         } else {
             mQueue.remove(downloadInfo);
             downloadInfo.setStatus(DownloadStatus.PAUSED);
-            DataChanger.getInstance(Utils.getContext()).postStatus(downloadInfo);
+            mDataChanger.postStatus(downloadInfo);
         }
     }
 
@@ -224,7 +267,7 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
         } else {
             mQueue.add(downloadInfo);
             downloadInfo.setStatus(DownloadStatus.WAITING);
-            DataChanger.getInstance(Utils.getContext()).postStatus(downloadInfo);
+            mDataChanger.postStatus(downloadInfo);
         }
     }
 
@@ -235,7 +278,7 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
         } else {
             mQueue.remove(downloadInfo);
             downloadInfo.setStatus(DownloadStatus.CANCELED);
-            DataChanger.getInstance(Utils.getContext()).postStatus(downloadInfo);
+            mDataChanger.postStatus(downloadInfo);
         }
     }
 
@@ -252,9 +295,15 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
     }
 
     private void recoverAll() {
-
+        ArrayList<DownloadInfo> mRecoverableEntries = mDataChanger.queryAllRecoverableEntries();
+        if (mRecoverableEntries != null) {
+            for (DownloadInfo downloadInfo : mRecoverableEntries) {
+                addDownloadQueue(downloadInfo);
+            }
+        }
     }
 
+    //todo cancel 掉所有的请求
     private void cancelAll() {
 
     }

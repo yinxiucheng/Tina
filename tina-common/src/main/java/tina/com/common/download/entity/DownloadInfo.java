@@ -5,6 +5,8 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 
+import tina.com.common.download.utils.DownloadConfig;
+
 /**
  * @author yxc
  * @date 2018/8/1
@@ -219,6 +221,16 @@ public class DownloadInfo implements Serializable {
 
     public String getDownloadPerSize() {
         return DF.format((float) finish / (1024 * 1024)) + "M/" + DF.format((float) length / (1024 * 1024)) + "M";
+    }
+
+    public void reset() {
+        finish = 0;
+        ranges = null;
+        progress = 0;
+        File file = DownloadConfig.getInstance().getDownloadFile(url);
+        if (file.exists()){
+            file.delete();
+        }
     }
 
 }

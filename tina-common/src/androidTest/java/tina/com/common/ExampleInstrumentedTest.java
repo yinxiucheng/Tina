@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("meitu.com.live_common.test", appContext.getPackageName());
+        assertEquals("com.live_common.test", appContext.getPackageName());
     }
 }

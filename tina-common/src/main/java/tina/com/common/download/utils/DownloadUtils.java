@@ -8,6 +8,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
+import android.os.StatFs;
 import android.os.StrictMode;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -37,7 +39,7 @@ public class DownloadUtils {
     }
 
     public static void installApp(Context context, String fileName) {
-        File file = new File(DownloadDataConfig.getInstance().getDefaultDownloadDir(), fileName);
+        File file = new File(DownloadConfig.getInstance().getDefaultDownloadDir(), fileName);
         Trace.d("install apk :" + file.getPath());
         installApp(context, file);
     }
@@ -164,5 +166,29 @@ public class DownloadUtils {
     }
 
 
+    //获取可用SD卡存储
+    public static long getEnableSize() {
+        File path = Environment.getExternalStorageDirectory();
+        if (null == path) {
+            return 0;
+        }
+        StatFs stat = new StatFs(path.getPath());
+        long blockSize;  //每一个存储块的大小
+        long tatalBlocks;  //存储块的总数
+        long avaliableBlocks;  //可以使用的存储块的个数
+
+        //获取当前的版本的等级,版本大于18也就是4.4.2，使用没过时的api
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            blockSize = stat.getBlockSizeLong();  //每一个存储块的大小
+            tatalBlocks = stat.getBlockCountLong();  //存储块的总数
+            avaliableBlocks = stat.getAvailableBlocksLong();  //可以使用的存储块的个数
+
+        } else {
+            blockSize = stat.getBlockSizeLong();  //每一个存储块的大小
+            tatalBlocks = stat.getBlockCountLong();  //存储块的总数
+            avaliableBlocks = stat.getAvailableBlocksLong();  //可以使用的存储块的个数
+        }
+        return blockSize * avaliableBlocks;
+    }
 
 }

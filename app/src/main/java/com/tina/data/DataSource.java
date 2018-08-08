@@ -5,8 +5,7 @@ import java.util.List;
 
 import tina.com.common.download.entity.DownloadInfo;
 import tina.com.common.download.entity.DownloadStatus;
-import tina.com.common.download.utils.DownloadDataConfig;
-import tina.com.common.http.utils.Utils;
+import tina.com.common.download.utils.DownloadConfig;
 
 public class DataSource {
 
@@ -64,7 +63,7 @@ public class DataSource {
         List<DownloadInfo> appInfos = new ArrayList<>();
         for (int i = 0; i < URLS.length; i++) {
             DownloadInfo appInfo = new DownloadInfo(NAMES[i], PACKAGES[i] + ".apk", IMAGES[i], URLS[i],
-                    DownloadDataConfig.getInstance().getDefaultDownloadDir());
+                    DownloadConfig.getInstance().getDefaultDownloadDir());
 
             appInfo.setStatus(DownloadStatus.IDLE);
             appInfos.add(appInfo);

@@ -12,7 +12,8 @@ import java.net.URL;
 import tina.com.common.download.DownloadException;
 import tina.com.common.download.entity.DownloadStatus;
 import tina.com.common.download.utils.Constants;
-import tina.com.common.download.utils.DownloadDataConfig;
+import tina.com.common.download.utils.DownloadConfig;
+import tina.com.common.download.utils.DownloadUtils;
 import tina.com.common.download.utils.Trace;
 
 /**
@@ -155,8 +156,8 @@ public class ConnectThread implements Runnable, ConnectInterface {
     private void checkExternalStorageEnough(long length) throws DownloadException {
         if (length <= 0) {
             throw new DownloadException(DownloadStatus.FAILED, "length <= 0");
-        } else if (DownloadDataConfig.getInstance().isUseExternalStorageDir() &&
-                length > DownloadDataConfig.getInstance().getEnableSize()) {
+        } else if (DownloadConfig.getInstance().isUseExternalStorageDir() &&
+                length > DownloadUtils.getEnableSize()) {
             throw new DownloadException(DownloadStatus.STATUS_STORAGE_NOT_ENOUGH, "length over external storage");
         }
     }
@@ -181,7 +182,7 @@ public class ConnectThread implements Runnable, ConnectInterface {
                 break;
             case DownloadStatus.FAILED:
                 synchronized (mOnConnectListener) {
-                    mStatus = DownloadStatus.PAUSED;
+                    mStatus = DownloadStatus.FAILED;
                     mOnConnectListener.onConnectFailed(e);
                 }
                 break;
