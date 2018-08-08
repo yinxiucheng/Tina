@@ -4,34 +4,29 @@ import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 
-import com.annimon.stream.Stream;
-import com.meitu.secret.SigEntity;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import okhttp3.Request;
+import tina.com.common.BuildConfig;
+import tina.com.common.http.sdk.SDKConfig;
+import tina.com.common.http.utils.AppUtil;
+import tina.com.common.http.utils.NetworkUtil;
 import tina.com.live_base.account.LiveAccountManager;
 import tina.com.live_base.account.OauthModel;
 import tina.com.live_base.sp.SharedKey;
 import tina.com.live_base.sp.SharedPreferencesUtil;
 import tina.com.live_base.utils.BaseUtils;
 import tina.com.live_base.utils.DeviceUtil;
-import tina.com.common.BuildConfig;
-import tina.com.common.http.sdk.SDKConfig;
-import tina.com.common.http.utils.AppUtil;
-import tina.com.common.http.utils.NetworkUtil;
-import okhttp3.Request;
 
 /**
- * @author Ragnar
- * @date 2018/5/21 下午6:25
- * @description 公共参数[http://api.btech.meitu.com/project/96/interface/api/117]
+ * 公共参数
+ *
  */
 public class CommonParams {
 
@@ -89,13 +84,13 @@ public class CommonParams {
         // (V7.3.0+) 分辨率px，格式1080*1920，宽*高
         paramsMap.put("resolution", "");
 
-        SigEntity sigEntity = getSignParams(host, path, paramsMap);
+//        SigEntity sigEntity = getSignParams(host, path, paramsMap);
         // 加密串，有密钥+提交参数合成，用于服务端与客户端通信间加密验证
-        paramsMap.put("sig", sigEntity.sig);
-        // 时间变量，用于对请求参数一致时的混淆
-        paramsMap.put("sigTime", sigEntity.sigTime);
-        // 加密服务版本号
-        paramsMap.put("sigVersion", sigEntity.sigVersion);
+//        paramsMap.put("sig", sigEntity.sig);
+//        // 时间变量，用于对请求参数一致时的混淆
+//        paramsMap.put("sigTime", sigEntity.sigTime);
+//        // 加密服务版本号
+//        paramsMap.put("sigVersion", sigEntity.sigVersion);
 
         return paramsMap;
     }
@@ -118,65 +113,32 @@ public class CommonParams {
     }
 
 
-    public static String getParamsJsonString(String url, Map<String, String> paramsMap){
-        if (TextUtils.isEmpty(url)){
-            return "";
-        }
-        Uri uri = Uri.parse(url);
-        Map<String, String> map = getBaseParams(uri.getHost(), uri.getPath(), paramsMap);
-        if (null != map && map.size() > 0){
-            return getJsonObjectString(map);
-        }
-        return "";
-    }
+//    public static String getParamsJsonString(String url, Map<String, String> paramsMap){
+//        if (TextUtils.isEmpty(url)){
+//            return "";
+//        }
+//        Uri uri = Uri.parse(url);
+//        Map<String, String> map = getBaseParams(uri.getHost(), uri.getPath(), paramsMap);
+//        if (null != map && map.size() > 0){
+//            return getJsonObjectString(map);
+//        }
+//        return "";
+//    }
 
-    public static String getParamsJsonString(String url){
-        Map<String, String> paramsMap = new HashMap<>();
-        return getParamsJsonString(url, paramsMap);
-    }
-
-    private static SigEntity getSignParams(String url,
-                                           String path,
-                                           Map<String, String> paramsMap) {
-        ArrayList<String> params = new ArrayList<>();
-        OauthModel oauthInfo = LiveAccountManager.getOauthInfo();
-        if (oauthInfo != null && AppUtil.isNeedAccessToken(url) && !TextUtils.isEmpty(oauthInfo.getAccess_token())) {
-            params.add(oauthInfo.getAccess_token());
-        }
-        Stream.of(paramsMap).forEach(map -> {
-            if (!TextUtils.isEmpty(map.getValue())) params.add(map.getValue());
-        });
-        return SigEntity.generatorSigWithFinal(path,
-                params.toArray(new String[params.size()]),
-                SDKConfig.APP_SIG_ID,
-                BaseUtils.getContext());
-    }
-
-    public static SigEntity createSigEntity(String urlPath, String[] valuesArr) {
-        return SigEntity.generatorSigWithFinal(urlPath, valuesArr, SDKConfig.APP_SIG_ID, BaseUtils.getContext());
-    }
-
-    public static String getChannel() {
-        return SharedPreferencesUtil.getString(SharedKey.APP_CHANNEL, SDKConfig.ALPHA_CHANNEL);
-    }
-
-    public static String getLanguage() {
-        return DeviceUtil.getLanguage();
-    }
-
-    public static String getDeviceId() {
-        return DeviceUtil.getDeviceId();
-    }
-
-    public static String getIMEI() {
-        return DeviceUtil.getIMEIValue();
-    }
-
-    public static String getAndroidId() {
-        return DeviceUtil.getAndroidId(BaseUtils.getContext());
-    }
-
-    public static String getHostClientId() {
-        return SharedPreferencesUtil.getString(SharedKey.HOST_CLIENT_ID, "");
-    }
+//    private static SigEntity getSignParams(String url,
+//                                           String path,
+//                                           Map<String, String> paramsMap) {
+//        ArrayList<String> params = new ArrayList<>();
+//        OauthModel oauthInfo = LiveAccountManager.getOauthInfo();
+//        if (oauthInfo != null && AppUtil.isNeedAccessToken(url) && !TextUtils.isEmpty(oauthInfo.getAccess_token())) {
+//            params.add(oauthInfo.getAccess_token());
+//        }
+//        Stream.of(paramsMap).forEach(map -> {
+//            if (!TextUtils.isEmpty(map.getValue())) params.add(map.getValue());
+//        });
+//        return SigEntity.generatorSigWithFinal(path,
+//                params.toArray(new String[params.size()]),
+//                SDKConfig.APP_SIG_ID,
+//                BaseUtils.getContext());
+//    }
 }

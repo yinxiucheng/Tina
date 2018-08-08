@@ -1,4 +1,4 @@
-package meitu.com.live_common.download.gen;
+package com.live_common.download.gen;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

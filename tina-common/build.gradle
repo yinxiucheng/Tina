@@ -10,7 +10,6 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -28,7 +27,7 @@ android {
 
 greendao {
     schemaVersion 1
-    daoPackage 'meitu.com.live_common.download.gen'
+    daoPackage 'com.live_common.download.gen'
     targetGenDir 'src/main/java'
 }
 
@@ -56,16 +55,10 @@ dependencies {
     api deps.okhttp.logger
     // Java8 Stream
     api deps.annimon_stream
-
-
-
     implementation 'com.squareup.retrofit2:converter-scalars:2.2.0'
-    implementation 'com.meitu.library:httpsiglib:1.3.12'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
-
     //greendao
     implementation 'org.greenrobot:greendao:3.2.2'
     implementation 'org.greenrobot:greendao-generator:3.2.2'

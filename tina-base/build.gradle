@@ -33,6 +33,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     // 权限申请
-    api 'com.meitu.library.commonlib:commonlib:1.2.1@aar'
     api 'com.google.code.gson:gson:2.8.5'
 }

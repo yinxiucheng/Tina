@@ -147,29 +147,6 @@ public class DeviceUtil {
         return resultLanguage;
     }
 
-    /**
-     * 获取唯一的设备ID，先获取Imei码，如果获取不到，<br>
-     * 获取手机Mac值，如果再获取不到，获取AndroidId <br>
-     * 如果都获取不到，返回null
-     *
-     * @return 唯一的设备ID
-     */
-//    @SuppressLint("HardwareIds")
-//    public static String getDeviceId() {
-//        String deviceId;
-//        // 先获取imei码
-//        deviceId = getIMEIValue();
-//        if (TextUtils.isEmpty(deviceId)) {
-//            // 获取不到imei码，获取手机mac值
-//            deviceId = getMacValue();
-//            if (TextUtils.isEmpty(deviceId)) {
-//                // 获取不到手机mac值，获取android id
-//                deviceId = Settings.Secure.getString(MTVoiceLive.getApplication().getContentResolver(), Settings.Secure.ANDROID_ID);
-//            }
-//        }
-//        return deviceId;
-//    }
-
     private static String deviceId = null;
 
     public static String getDeviceId() {

@@ -11,19 +11,17 @@ public class UrlConfig {
 
     private static LiveHostType currentHostType;
 
-    private static final String API_PRE = "http://pre-api.voice.meitu.com";
-    private static final String API_BETA = "http://beta-api.voice.meitu.com";
-    private static final String API_ONLINE = "http://api.voice.meitu.com";
+    private static final String API_PRE = "http://pre-api.voice.mu.com";
+    private static final String API_BETA = "http://beta-api.voice.mu.com";
+    private static final String API_ONLINE = "http://api.voice.mu.com";
 
-    private static final String IM_SERVER_PRE = "http://pre.im.voice.meitu.com";
-    private static final String IM_SERVER_BETA = "http://betaim.voice.meitu.com";
-    private static final String IM_SERVER_ONLINE = "http://im.voice.meitu.com";
+    private static final String IM_SERVER_PRE = "http://pre.im.voice.mu.com";
+    private static final String IM_SERVER_BETA = "http://betaim.voice.mu.com";
+    private static final String IM_SERVER_ONLINE = "http://im.voice.mu.com";
 
-    private static final String WEB_H5_BASE_URL_PRE = "http://pre-www2.meipai.com/";
-    private static final String WEB_H5_BASE_URL_BETA = "http://beta-www2.meipai.com/";
-    private static final String WEB_H5_BASE_URL_ONLINE = "https://www2.meipai.com/";
-
-    public static final String IM_SERVER_PRE_GETIP = "http://preim.live.meitu.com";
+    private static final String WEB_H5_BASE_URL_PRE = "http://pre-www2.mpa.com/";
+    private static final String WEB_H5_BASE_URL_BETA = "http://beta-www2.mpa.com/";
+    private static final String WEB_H5_BASE_URL_ONLINE = "https://www2.mpa.com/";
 
     public static  String CURRENT_API = API_ONLINE;
     public static  String CURRENT_IM_SERVER = IM_SERVER_ONLINE;
@@ -31,9 +29,10 @@ public class UrlConfig {
 
     public static final String HEADER_URLNAME_KEY = "urlname";
 
-    public static final String HEADER_DOMAIN_API_VALUE = "voice.meitu.com";
-    public static final String HEADER_DOMAIN_IM_VALUE = "im.voice.meitu.com";
-    public static final String HEADER_DOMAIN_H5_VALUE = "www2.meipai.com";
+    //处理其它的不同的baseurl的情况，需要添加header参数
+    public static final String HEADER_DOMAIN_API_VALUE = "voice.mu.com";
+    public static final String HEADER_DOMAIN_IM_VALUE = "im.voice.mu.com";
+    public static final String HEADER_DOMAIN_H5_VALUE = "www2.mpa.com";
 
     public static void setHostType(LiveHostType hostType) {
         currentHostType = hostType;
@@ -55,9 +54,7 @@ public class UrlConfig {
                 break;
         }
     }
-
     public static boolean isTestAPIEnvironment() {
         return currentHostType != LiveHostType.ONLINE;
     }
-
 }
