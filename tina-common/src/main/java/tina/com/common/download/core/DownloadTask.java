@@ -90,7 +90,13 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
         isPause = true;
         setStatus(DownloadStatus.PAUSED);
         for (DownloadThread thread : mDownloadThreadList) {
-            thread.pause();
+            if (null != thread && thread.isRunning()){
+                if (mDownloadInfo.isAcceptRanges()){
+                    thread.pause();
+                }else {
+                    thread.cancel();
+                }
+            }
         }
     }
 
@@ -104,7 +110,9 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
         isCancel = true;
         setStatus(DownloadStatus.CANCELED);
         for (DownloadThread thread : mDownloadThreadList) {
-            thread.cancel();
+            if (null != thread && thread.isRunning()){
+                thread.cancel();
+            }
         }
     }
 
@@ -243,7 +251,7 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
     @Override
     public void onDownloadPaused() {
         if (isAllPaused()) {
-            setStatusAndNotify(DownloadStatus.COMPLETED, DownloadService.NOTIFY_COMPLETE);
+            setStatusAndNotify(DownloadStatus.PAUSED, DownloadService.NOTIFY_COMPLETE);
             onDestroy();
         }
     }
@@ -316,7 +324,7 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
     }
 
     private void deleteFile() {
-        File file = new File(mDownloadInfo.getDir(), mDownloadInfo.getName());
+        File file = new File(mDownloadInfo.getDir(), mDownloadInfo.getFileName());
         if (file.exists() && file.isFile()) {
             file.delete();
         }

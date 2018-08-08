@@ -63,7 +63,7 @@ public class DataSource {
     public List<DownloadInfo> getData() {
         List<DownloadInfo> appInfos = new ArrayList<>();
         for (int i = 0; i < URLS.length; i++) {
-            DownloadInfo appInfo = new DownloadInfo(PACKAGES[i] + ".apk", IMAGES[i], URLS[i],
+            DownloadInfo appInfo = new DownloadInfo(NAMES[i], PACKAGES[i] + ".apk", IMAGES[i], URLS[i],
                     DownloadDataConfig.getInstance().getDefaultDownloadDir());
 
             appInfo.setStatus(DownloadStatus.IDLE);

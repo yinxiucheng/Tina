@@ -186,7 +186,7 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
             }
             final long offset = mThreadInfo.getStart() + mThreadInfo.getFinished();
             try {
-                raf = getFile(mDownloadInfo.getDir(), mDownloadInfo.getName(), offset);
+                raf = getFile(mDownloadInfo.getDir(), mDownloadInfo.getFileName(), offset);
             } catch (IOException e) {
                 throw new DownloadException(DownloadStatus.FAILED, "File error", e);
             }
@@ -212,6 +212,10 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
         }
     }
 
+    public boolean isRunning() {
+        return mStatus == DownloadStatus.DOWNLOADING;
+    }
+
     private void transferData(InputStream inputStream, RandomAccessFile raf) throws DownloadException {
         final byte[] buffer = new byte[1024 * 8];
         while (true) {
@@ -226,6 +230,7 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
                 mThreadInfo.setFinished(mThreadInfo.getFinished() + len);
                 synchronized (mOnDownloadListener) {
                     mDownloadInfo.setFinish(mDownloadInfo.getFinish() + len);
+                    mDownloadInfo.setStatus(DownloadStatus.DOWNLOADING);
                     mOnDownloadListener.onDownloadProgress(mDownloadInfo.getFinish(), mDownloadInfo.getLength());
                 }
             } catch (IOException e) {

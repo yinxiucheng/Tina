@@ -133,7 +133,7 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
     }
 
     private void install(DownloadInfo appInfo) {
-        DownloadUtils.installApp(getActivity(), new File(mDownloadDir, appInfo.getName() + ".apk"));
+        DownloadUtils.installApp(getActivity(), new File(mDownloadDir, appInfo.getFileName() + ".apk"));
     }
 
     private void deleteAppInfo(Context ctx, final DownloadInfo appInfo) {

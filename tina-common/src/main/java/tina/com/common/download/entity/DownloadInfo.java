@@ -2,6 +2,7 @@ package tina.com.common.download.entity;
 
 import java.io.File;
 import java.io.Serializable;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 
 /**
@@ -16,7 +17,7 @@ public class DownloadInfo implements Serializable {
 
     public String tag;
 
-    public String name;
+    public String fileName;
 
     public String url;
 
@@ -30,6 +31,8 @@ public class DownloadInfo implements Serializable {
 
     public int progress;
 
+    public String name;
+
     public boolean acceptRanges;
 
     public HashMap<Integer, Integer> ranges;
@@ -42,8 +45,9 @@ public class DownloadInfo implements Serializable {
 
     public DownloadInfo(){}
 
-    public DownloadInfo(String name, String iamge, String url,File file) {
+    public DownloadInfo(String name, String fileName, String iamge, String url,File file) {
         this.name = name;
+        this.fileName = fileName;
         this.image = iamge;
         this.url = url;
         this.id = url;
@@ -58,12 +62,12 @@ public class DownloadInfo implements Serializable {
         this.finish = finish;
     }
 
-    public String getName() {
-        return name;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
 
@@ -115,10 +119,8 @@ public class DownloadInfo implements Serializable {
         this.versionCode = versionCode;
     }
 
-
-
-    //获取
-    public String getStausText(){
+    //获取当前状态对应 下一个status的 文案
+    public String getNextStausText(){
         if (status == DownloadStatus.PAUSED){
             return "resume";
         }else if (status == DownloadStatus.DOWNLOADING){
@@ -131,6 +133,28 @@ public class DownloadInfo implements Serializable {
             return "install";
         }else if (status == DownloadStatus.INSTALLED){
             return "open";
+        }else if (status == DownloadStatus.FAILED){
+            return "error";
+        }else {
+            return "download";
+        }
+    }
+
+
+    //获取
+    public String getStausText(){
+        if (status == DownloadStatus.PAUSED){
+            return "pause";
+        }else if (status == DownloadStatus.DOWNLOADING){
+            return "downloading";
+        }else if (status == DownloadStatus.IDLE){
+            return "idle";
+        }else if (status == DownloadStatus.WAITING){
+            return "waiting";
+        }else if (status == DownloadStatus.COMPLETED){
+            return "completed";
+        }else if (status == DownloadStatus.INSTALLED){
+            return "installed";
         }else if (status == DownloadStatus.FAILED){
             return "error";
         }else {
@@ -178,15 +202,23 @@ public class DownloadInfo implements Serializable {
         this.acceptRanges = acceptRanges;
     }
 
-    @Override
-    public String toString() {
-        return name + ":" + finish + "/" + length + "::" + status ;
+    public String getName() {
+        return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return fileName + ":" + finish + "/" + length + "::" + status ;
+    }
+
+    private static final DecimalFormat DF = new DecimalFormat("0.00");
+
     public String getDownloadPerSize() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(finish).append("/").append(length);
-        return builder.toString();
+        return DF.format((float) finish / (1024 * 1024)) + "M/" + DF.format((float) length / (1024 * 1024)) + "M";
     }
 
 }

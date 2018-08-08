@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void notifyObserver(DownloadInfo data) {
                 downloadInfo = data;
-                Trace.e(data.getName() + ":" + data.getFinish() + "/"
+                Trace.e(data.getFileName() + ":" + data.getFinish() + "/"
                         + data.getLength() + ":" + data.getStatus());
                 if (data.status == DownloadStatus.CANCELED) {
                     downloadInfo = null;
@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         };
 
         downloadInfo = new DownloadInfo();
-        downloadInfo.setName("test");
+        downloadInfo.setFileName("test");
         downloadInfo.setUrl("http://s1.music.126.net/download/android/CloudMusic_2.8.1_official_4.apk");
 
         download.setOnClickListener(this);
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         if (null == downloadInfo) {
             downloadInfo = new DownloadInfo();
-            downloadInfo.setName("test");
+            downloadInfo.setFileName("test");
             downloadInfo.setUrl("http://s1.music.126.net/download/android/CloudMusic_2.8.1_official_4.apk");
         }
         switch (v.getId()) {
