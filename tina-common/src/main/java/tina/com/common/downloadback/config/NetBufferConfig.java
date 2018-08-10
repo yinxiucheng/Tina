@@ -1,4 +1,4 @@
-package tina.com.common.download.config;
+package tina.com.common.downloadback.config;
 
 /**
  * @author: 小民

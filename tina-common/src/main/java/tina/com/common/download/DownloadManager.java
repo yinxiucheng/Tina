@@ -55,6 +55,10 @@ public class DownloadManager {
         DownloadService.intentRecoverAll(context);
     }
 
+    public void cancelAll(){
+        DownloadService.intentRecoverAll(context);
+    }
+
 //    private DownloadInfo getDownLoadInfo(String url){
 //        DownloadInfo downloadInfo = hashMap.get(url);
 //        if (null == downloadInfo){

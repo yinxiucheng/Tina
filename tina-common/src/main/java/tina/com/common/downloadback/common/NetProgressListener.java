@@ -1,10 +1,10 @@
-package tina.com.common.download.common;
+package tina.com.common.downloadback.common;
 
 /**
  * @author: 小民
  * @date: 2017-06-06
  * @time: 20:23
- * @开源地址: https://github.com/2745329043/XDownloadDemo
+ * @开源地址: https://github.backcom/2745329043/XDownloadDemo
  * @说明: 网络请求过程中的进度
  */
 public interface NetProgressListener {

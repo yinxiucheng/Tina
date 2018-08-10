@@ -1,4 +1,4 @@
-package tina.com.common.download.buffer;
+package tina.com.common.downloadback.buffer;
 
 /**
  * 下载状态

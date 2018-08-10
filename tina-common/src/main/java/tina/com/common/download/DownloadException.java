@@ -4,8 +4,8 @@ public class DownloadException extends Exception {
     private String errorMessage;
     private int errorCode;
 
-
     public DownloadException() {
+
     }
 
     public DownloadException(String detailMessage) {

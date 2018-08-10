@@ -1,4 +1,4 @@
-package tina.com.common.download;
+package tina.com.common.downloadback;
 
 import java.io.File;
 import java.util.Iterator;
@@ -10,13 +10,13 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
-import tina.com.common.download.buffer.DownInfo;
-import tina.com.common.download.buffer.DownInfoDbUtil;
-import tina.com.common.download.buffer.DownState;
-import tina.com.common.download.common.NetProgressListener;
-import tina.com.common.download.common.RetryWhenNetwork;
 import tina.com.common.download.utils.NetworkUtil;
 import okhttp3.ResponseBody;
+import tina.com.common.downloadback.buffer.DownInfo;
+import tina.com.common.downloadback.buffer.DownInfoDbUtil;
+import tina.com.common.downloadback.buffer.DownState;
+import tina.com.common.downloadback.common.NetProgressListener;
+import tina.com.common.downloadback.common.RetryWhenNetwork;
 
 /**
  * @author: 小民

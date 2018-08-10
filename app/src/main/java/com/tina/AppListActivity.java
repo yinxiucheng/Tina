@@ -1,68 +1,73 @@
 package com.tina;
 
-import android.content.Intent;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.view.menu.MenuBuilder;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuItem;
+import android.widget.Toast;
 
-public class AppListActivity extends AppCompatActivity {
-
-    public static final class TYPE {
-        public static final int TYPE_LISTVIEW = 0;
-        public static final int TYPE_RECYCLERVIEW = 1;
-    }
+public class AppListActivity extends FragmentActivity {
 
     RecyclerViewFragment fragment;
 
+    @SuppressLint("RestrictedApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list);
-        Intent intent = getIntent();
-        int type = intent.getIntExtra("EXTRA_TYPE", TYPE.TYPE_LISTVIEW);
-
         if (savedInstanceState == null) {
             fragment = new RecyclerViewFragment();
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.container, fragment)
                     .commit();
         }
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("ListView Demo");
 
-        getSupportActionBar().setTitle(type == TYPE.TYPE_LISTVIEW ? "ListView Demo" : "批量下载");
+        toolbar.setPopupTheme(R.style.ToolbarPopupTheme);
+        //用Toolbar创建menu
+        toolbar.inflateMenu(R.menu.menu_main);
+        //拿到Menu
+        Menu menu = toolbar.getMenu();
+        //下面的这段代码是为了让menu菜单折叠样式时,展开能显示icon图标.不然icon图标不会显示.(感觉很坑)
+        if (menu != null) {
+            if (menu.getClass().getSimpleName().equals("MenuBuilder")) {
+                try {
+                    MenuBuilder menuBuilder = (MenuBuilder) menu;
+                    menuBuilder.setOptionalIconsVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        toolbar.setOnMenuItemClickListener(onMenuItemClick);
+
     }
+
+    private Toolbar.OnMenuItemClickListener onMenuItemClick = menuItem -> {
+        String msg = "";
+        switch (menuItem.getItemId()) {
+            case R.id.pause:
+                fragment.pauseAll();
+                break;
+            case R.id.recover:
+                fragment.recoverAll();
+                break;
+            case R.id.cancel:
+                fragment.cancelAll();
+                break;
+        }
+        return true;
+    };
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            if (item.getTitle().equals("pause all")) {
-                item.setTitle(R.string.action_recover_all);
-                if (null != fragment){
-                    fragment.pauseAll();
-                }
-            } else {
-                item.setTitle(R.string.action_pause_all);
-//                mDownloadManager.recoverAll();
-                fragment.recoverAll();
-            }
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        return super.onCreateOptionsMenu(menu);
     }
 
 }

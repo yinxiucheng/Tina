@@ -9,8 +9,8 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -18,7 +18,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import tina.com.common.download.core.DownloadTask;
 import tina.com.common.download.core.Downloader;
-import tina.com.common.download.data.DBController;
+import tina.com.common.download.data.DBHelper;
 import tina.com.common.download.entity.DownloadInfo;
 import tina.com.common.download.entity.DownloadStatus;
 import tina.com.common.download.observer.DataChanger;
@@ -35,8 +35,6 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
 
     private static final String TAG = DownloadService.class.getSimpleName();
 
-    private static final int MAX_QUE_LENGTH = 2;
-
     public static final int NOTIFY_DOWNLOADING = 1;
 
     public static final int NOTIFY_PAUSE_OR_CANCEL = 2;
@@ -46,7 +44,6 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
     public static final int NOTIFY_CONNECTING = 4;
 
     public static final int NOTIFY_DOWNLOAD_ERROR = 5;
-
 
     public static final String KEY_ACTION_DOWN = "action_down";
 
@@ -62,7 +59,11 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
 
     private DataChanger mDataChanger;
 
-    private DBController mDBController;
+//    private DBController mDBController;
+
+    private DBHelper mDBHelper;
+
+    private int maxQueueLength;
 
     Handler mHandler = new Handler() {
         @Override
@@ -90,7 +91,7 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
 
 
     private void checkNextWaiting() {
-        if (mDownloadingTaskList.size() < MAX_QUE_LENGTH) {
+        if (mDownloadingTaskList.size() < maxQueueLength) {
             DownloadInfo downloadInfo = mQueue.poll();
             if (null != downloadInfo) {
                 download(downloadInfo);
@@ -150,6 +151,12 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
         context.startService(intent);
     }
 
+    public static void intentCancelAll(Context context) {
+        Intent intent = new Intent(context, DownloadService.class);
+        intent.putExtra(KEY_ACTION_DOWN, Constants.ACTION_CANCEL_ALL);
+        context.startService(intent);
+    }
+
     private static void generateKey(DownloadInfo downloadInfo){
         if (null != downloadInfo && !TextUtils.isEmpty(downloadInfo.url)
                 && TextUtils.isEmpty(downloadInfo.getTag())){
@@ -163,18 +170,20 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
         super.onCreate();
         executor = Executors.newCachedThreadPool();
         mDataChanger = DataChanger.getInstance(Utils.getContext());
-        mDBController = DBController.getInstance();
+        mDBHelper = DBHelper.getInstance();
+        maxQueueLength = DownloadConfig.getInstance().getMaxQueueLength();
         initalizeDownload();
     }
 
     private void initalizeDownload() {
-        ArrayList<DownloadInfo> mDownloadEtries = mDBController.queryAll();
+        List<DownloadInfo> mDownloadEtries = mDBHelper.queryDownloadInfoAll();
         if (mDownloadEtries != null) {
             for (DownloadInfo downloadInfo : mDownloadEtries) {
+                generateKey(downloadInfo);
                 if (downloadInfo.status == DownloadStatus.DOWNLOADING || downloadInfo.status == DownloadStatus.WAITING) {
 //                    TODO add a config if need to recover download
                     if (DownloadConfig.getInstance().isRecoverDownloadWhenStart()) {
-                        if (downloadInfo.isAcceptRanges()){
+                        if (downloadInfo.getAcceptRanges()){
                             downloadInfo.status = DownloadStatus.PAUSED;
                         }else {
                             downloadInfo.status = DownloadStatus.IDLE;
@@ -182,16 +191,16 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
                         }
                         addDownloadQueue(downloadInfo);
                     } else {
-                        if (downloadInfo.isAcceptRanges()){
+                        if (downloadInfo.getAcceptRanges()){
                             downloadInfo.status = DownloadStatus.PAUSED;
                         }else {
                             downloadInfo.status = DownloadStatus.IDLE;
                             downloadInfo.reset();
                         }
-                        mDBController.newOrUpdate(downloadInfo);
+                        mDBHelper.newOrUpdate(downloadInfo);
                     }
                 }
-                mDataChanger.addToOperatedEntryMap(downloadInfo.id, downloadInfo);
+                mDataChanger.addToOperatedEntryMap(downloadInfo.tag, downloadInfo);
             }
         }
     }
@@ -262,7 +271,7 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
     }
 
     private void addDownloadQueue(DownloadInfo downloadInfo) {
-        if (mDownloadingTaskList.size() < MAX_QUE_LENGTH) {
+        if (mDownloadingTaskList.size() < maxQueueLength) {
             download(downloadInfo);
         } else {
             mQueue.add(downloadInfo);
@@ -295,7 +304,7 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
     }
 
     private void recoverAll() {
-        ArrayList<DownloadInfo> mRecoverableEntries = mDataChanger.queryAllRecoverableEntries();
+        List<DownloadInfo> mRecoverableEntries = mDataChanger.queryAllRecoverableEntries();
         if (mRecoverableEntries != null) {
             for (DownloadInfo downloadInfo : mRecoverableEntries) {
                 addDownloadQueue(downloadInfo);
@@ -303,9 +312,17 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
         }
     }
 
-    //todo cancel 掉所有的请求
+    //todo cancel 掉所有的请求, 清楚数据库，删除文件
     private void cancelAll() {
-
+        for (Map.Entry<String, DownloadTask> entry: mDownloadingTaskList.entrySet()) {
+            entry.getValue().cancel();
+        }
+        while (mQueue.iterator().hasNext()){
+            DownloadInfo downloadInfo = mQueue.poll();
+            downloadInfo.setStatus(DownloadStatus.CANCELED);
+            DataChanger.getInstance(Utils.getContext()).postStatus(downloadInfo);
+        }
+        mDownloadingTaskList.clear();
     }
 
     @Override

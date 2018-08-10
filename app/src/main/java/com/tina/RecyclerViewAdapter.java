@@ -19,6 +19,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import tina.com.common.download.entity.DownloadInfo;
+import tina.com.common.download.entity.DownloadStatus;
 import tina.com.common.image.GlideImageLoader;
 
 
@@ -70,9 +71,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             AppViewHolder holder = (AppViewHolder) viewHolder;
             final DownloadInfo appInfo = mAppInfos.get(position);
             holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
-            holder.txtApkType.setText(appInfo.getStausText());
+            holder.txtApkType.setText(DownloadStatus.getStausText(appInfo.getStatus()));
             holder.progressBar.setProgress(appInfo.getProgress());
-            holder.btnDownload.setText(appInfo.getNextStausText());
+            holder.btnDownload.setText(DownloadStatus.getNextStausText(appInfo.getStatus()));
             holder.btnDownload.setOnClickListener(v -> {
                 if (mListener != null) {
                     mListener.onItemClick(v, position, appInfo);
@@ -90,10 +91,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         final DownloadInfo appInfo = mAppInfos.get(position);
         holder.tvName.setText(appInfo.getName());
         holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
-        holder.txtApkType.setText(appInfo.getStausText());
+        holder.txtApkType.setText(DownloadStatus.getStausText(appInfo.getStatus()));
         holder.progressBar.setProgress(appInfo.getProgress());
-
-        holder.btnDownload.setText(appInfo.getNextStausText());
+        holder.btnDownload.setText(DownloadStatus.getNextStausText(appInfo.getStatus()));
 
         GlideImageLoader.loadRoundCenterCropImage(holder.itemView.getContext(), holder.ivIcon, appInfo.getImage(), 5);
 

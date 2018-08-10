@@ -1,7 +1,7 @@
-package tina.com.common.download;
+package tina.com.common.downloadback;
 
-import tina.com.common.download.buffer.DownInfo;
-import tina.com.common.download.buffer.DownState;
+import tina.com.common.downloadback.buffer.DownInfo;
+import tina.com.common.downloadback.buffer.DownState;
 
 /**
  * @author: 小民

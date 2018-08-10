@@ -14,6 +14,7 @@ import java.net.URLConnection;
 import java.util.Map;
 
 import tina.com.common.download.DownloadException;
+import tina.com.common.download.data.DBHelper;
 import tina.com.common.download.entity.DownloadInfo;
 import tina.com.common.download.entity.DownloadStatus;
 import tina.com.common.download.entity.ThreadInfo;
@@ -206,7 +207,6 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
             // cancel
             throw new DownloadException(DownloadStatus.CANCELED, "Download canceled!");
         } else if (mCommend == DownloadStatus.PAUSED) {
-            //todo pause
             updateDB(mThreadInfo);
             throw new DownloadException(DownloadStatus.PAUSED, "Download paused!");
         }
@@ -231,11 +231,11 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
                 synchronized (mOnDownloadListener) {
                     mDownloadInfo.setFinish(mDownloadInfo.getFinish() + len);
                     mDownloadInfo.setStatus(DownloadStatus.DOWNLOADING);
+                    DBHelper.getInstance().newOrUpdate(mDownloadInfo);
                     mOnDownloadListener.onDownloadProgress(mDownloadInfo.getFinish(), mDownloadInfo.getLength());
                 }
             } catch (IOException e) {
-                //todo 更新数据库
-//                updateDB(mThreadInfo);
+                updateDB(mThreadInfo);
                 throw new DownloadException(DownloadStatus.FAILED, e);
             }
         }

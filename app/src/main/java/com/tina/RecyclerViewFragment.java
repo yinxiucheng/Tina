@@ -1,9 +1,7 @@
 package com.tina;
 
-
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -140,11 +138,10 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
         AlertDialog dialog = new AlertDialog.Builder(ctx).setTitle("确认删除" + appInfo.getName() + "?")
                 .setCancelable(false)
                 .setMessage("确认删除" + appInfo.getName() + "?")
-                .setPositiveButton("删除", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setPositiveButton("删除", (dialog1, which) -> {
+                    DownloadManager.getInstance(getContext()).cancel(appInfo);
+
 //                        Utils.deleteAppInfo(new File(mDownloadDir, appInfo.getName() + ".apk"));
-                    }
                 })
                 .setNegativeButton("取消", null).create();
         dialog.show();
@@ -187,6 +184,11 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
 
     public void recoverAll(){
         DownloadManager.getInstance(getContext()).recoverAll();
+    }
+
+
+    public void cancelAll(){
+        DownloadManager.getInstance(getContext()).cancelAll();
     }
 
 

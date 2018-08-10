@@ -1,4 +1,4 @@
-package tina.com.common.download;
+package tina.com.common.downloadback;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,10 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import tina.com.common.download.buffer.BufferDbUtil;
-import tina.com.common.download.buffer.DownInfoDbUtil;
-import tina.com.common.download.common.NetProgressInterceptor;
-import tina.com.common.download.common.NetProgressListener;
 import tina.com.common.download.utils.NetworkUtil;
 import tina.com.common.download.utils.UnifiedErrorUtil;
 import okhttp3.Interceptor;
@@ -18,6 +14,10 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+import tina.com.common.downloadback.buffer.BufferDbUtil;
+import tina.com.common.downloadback.buffer.DownInfoDbUtil;
+import tina.com.common.downloadback.common.NetProgressInterceptor;
+import tina.com.common.downloadback.common.NetProgressListener;
 
 /**
  * @author: 小民

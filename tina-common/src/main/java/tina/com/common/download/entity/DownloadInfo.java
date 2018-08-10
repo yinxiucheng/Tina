@@ -1,22 +1,33 @@
 package tina.com.common.download.entity;
 
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.ToMany;
+import org.greenrobot.greendao.annotation.Transient;
+
 import java.io.File;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.HashMap;
+import java.util.List;
 
 import tina.com.common.download.utils.DownloadConfig;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.DaoException;
+import com.live_common.download.gen.DaoSession;
+import com.live_common.download.gen.ThreadInfoDao;
+import com.live_common.download.gen.DownloadInfoDao;
 
 /**
  * @author yxc
  * @date 2018/8/1
  */
-public class DownloadInfo implements Serializable {
+@Entity
+public class DownloadInfo implements Serializable{
 
-    public static final int DEFAULT_PROCESS_BEGIN = 0;
+    static final long serialVersionUID = 42L;
 
-    public String id;
-
+    @Id
     public String tag;
 
     public String fileName;
@@ -29,6 +40,7 @@ public class DownloadInfo implements Serializable {
 
     public int status;
 
+    @Transient
     public File dir;
 
     public int progress;
@@ -37,13 +49,14 @@ public class DownloadInfo implements Serializable {
 
     public boolean acceptRanges;
 
-    public HashMap<Integer, Integer> ranges;
-
     public String image;
 
     public String packageName;
 
     public String versionCode;
+
+    @ToMany(referencedJoinProperty="tag")
+    public List<ThreadInfo> threadInfoList;
 
     public DownloadInfo(){}
 
@@ -52,117 +65,27 @@ public class DownloadInfo implements Serializable {
         this.fileName = fileName;
         this.image = iamge;
         this.url = url;
-        this.id = url;
         this.dir = file;
     }
 
-    public long getFinish() {
-        return finish;
-    }
-
-    public void setFinish(long finish) {
-        this.finish = finish;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
+    @Generated(hash = 1756508593)
+    public DownloadInfo(String tag, String fileName, String url, long finish, long length, int status,
+            int progress, String name, boolean acceptRanges, String image, String packageName,
+            String versionCode) {
+        this.tag = tag;
         this.fileName = fileName;
-    }
-
-
-    public long getLength() {
-        return length;
-    }
-
-    public void setLength(long length) {
-        this.length = length;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
         this.url = url;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
+        this.finish = finish;
+        this.length = length;
         this.status = status;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
+        this.progress = progress;
+        this.name = name;
+        this.acceptRanges = acceptRanges;
         this.image = image;
-    }
-
-    public String getPackageName() {
-        return packageName;
-    }
-
-    public void setPackageName(String packageName) {
         this.packageName = packageName;
-    }
-
-    public String getVersionCode() {
-        return versionCode;
-    }
-
-    public void setVersionCode(String versionCode) {
         this.versionCode = versionCode;
     }
 
-    //获取当前状态对应 下一个status的 文案
-    public String getNextStausText(){
-        if (status == DownloadStatus.PAUSED){
-            return "resume";
-        }else if (status == DownloadStatus.DOWNLOADING){
-            return "pause";
-        }else if (status == DownloadStatus.IDLE){
-            return "download";
-        }else if (status == DownloadStatus.WAITING){
-            return "waiting";
-        }else if (status == DownloadStatus.COMPLETED){
-            return "install";
-        }else if (status == DownloadStatus.INSTALLED){
-            return "open";
-        }else if (status == DownloadStatus.FAILED){
-            return "error";
-        }else {
-            return "download";
-        }
-    }
-
-
-    //获取
-    public String getStausText(){
-        if (status == DownloadStatus.PAUSED){
-            return "pause";
-        }else if (status == DownloadStatus.DOWNLOADING){
-            return "downloading";
-        }else if (status == DownloadStatus.IDLE){
-            return "idle";
-        }else if (status == DownloadStatus.WAITING){
-            return "waiting";
-        }else if (status == DownloadStatus.COMPLETED){
-            return "completed";
-        }else if (status == DownloadStatus.INSTALLED){
-            return "installed";
-        }else if (status == DownloadStatus.FAILED){
-            return "error";
-        }else {
-            return "download";
-        }
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -171,15 +94,7 @@ public class DownloadInfo implements Serializable {
 
     @Override
     public int hashCode() {
-        return id.hashCode();
-    }
-
-    public int getProgress() {
-        return progress;
-    }
-
-    public void setProgress(int progress) {
-        this.progress = progress;
+        return url.hashCode();
     }
 
 
@@ -187,29 +102,12 @@ public class DownloadInfo implements Serializable {
         return dir;
     }
 
-    //todo 获取文件需要调整
     public String getTag() {
         return tag;
     }
 
     public void setTag(String tag) {
         this.tag = tag;
-    }
-
-    public boolean isAcceptRanges() {
-        return acceptRanges;
-    }
-
-    public void setAcceptRanges(boolean acceptRanges) {
-        this.acceptRanges = acceptRanges;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     @Override
@@ -219,18 +117,184 @@ public class DownloadInfo implements Serializable {
 
     private static final DecimalFormat DF = new DecimalFormat("0.00");
 
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+
+    /** Used for active entity operations. */
+    @Generated(hash = 1465593784)
+    private transient DownloadInfoDao myDao;
+
     public String getDownloadPerSize() {
         return DF.format((float) finish / (1024 * 1024)) + "M/" + DF.format((float) length / (1024 * 1024)) + "M";
     }
 
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 1847536389)
+    public List<ThreadInfo> getThreadInfoList() {
+        if (threadInfoList == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            ThreadInfoDao targetDao = daoSession.getThreadInfoDao();
+            List<ThreadInfo> threadInfoListNew = targetDao._queryDownloadInfo_ThreadInfoList(tag);
+            synchronized (this) {
+                if (threadInfoList == null) {
+                    threadInfoList = threadInfoListNew;
+                }
+            }
+        }
+        return threadInfoList;
+    }
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 153469034)
+    public synchronized void resetThreadInfoList() {
+        threadInfoList = null;
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 17038220)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getDownloadInfoDao() : null;
+    }
+
     public void reset() {
         finish = 0;
-        ranges = null;
         progress = 0;
         File file = DownloadConfig.getInstance().getDownloadFile(url);
         if (file.exists()){
             file.delete();
         }
+    }
+
+    public String getFileName() {
+        return this.fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public String getUrl() {
+        return this.url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public long getFinish() {
+        return this.finish;
+    }
+
+    public void setFinish(long finish) {
+        this.finish = finish;
+    }
+
+    public long getLength() {
+        return this.length;
+    }
+
+    public void setLength(long length) {
+        this.length = length;
+    }
+
+    public int getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getProgress() {
+        return this.progress;
+    }
+
+    public void setProgress(int progress) {
+        this.progress = progress;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean getAcceptRanges() {
+        return this.acceptRanges;
+    }
+
+    public void setAcceptRanges(boolean acceptRanges) {
+        this.acceptRanges = acceptRanges;
+    }
+
+    public String getImage() {
+        return this.image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getPackageName() {
+        return this.packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public String getVersionCode() {
+        return this.versionCode;
+    }
+
+    public void setVersionCode(String versionCode) {
+        this.versionCode = versionCode;
     }
 
 }

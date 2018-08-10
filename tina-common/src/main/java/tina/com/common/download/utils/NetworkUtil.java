@@ -17,7 +17,7 @@ import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 
 import okhttp3.ResponseBody;
-import tina.com.common.download.buffer.DownInfo;
+import tina.com.common.downloadback.buffer.DownInfo;
 
 /**
  * @author: 小民

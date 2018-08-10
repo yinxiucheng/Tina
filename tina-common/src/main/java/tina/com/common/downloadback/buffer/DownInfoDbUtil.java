@@ -1,14 +1,15 @@
-package tina.com.common.download.buffer;
+package tina.com.common.downloadback.buffer;
 
 import android.content.Context;
+
+import com.live_common.download.gen.DaoMaster;
+import com.live_common.download.gen.DaoSession;
+import com.live_common.download.gen.DownInfoDao;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.util.List;
 
-import tina.com.common.download.gen.DaoMaster;
-import tina.com.common.download.gen.DaoSession;
-import tina.com.common.download.gen.DownInfoDao;
 
 
 /**

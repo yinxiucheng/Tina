@@ -11,6 +11,7 @@ import java.util.concurrent.Executor;
 
 import tina.com.common.download.DownloadException;
 import tina.com.common.download.DownloadService;
+import tina.com.common.download.data.DBHelper;
 import tina.com.common.download.entity.DownloadInfo;
 import tina.com.common.download.entity.DownloadStatus;
 import tina.com.common.download.entity.ThreadInfo;
@@ -91,7 +92,7 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
         setStatus(DownloadStatus.PAUSED);
         for (DownloadThread thread : mDownloadThreadList) {
             if (null != thread && thread.isRunning()){
-                if (mDownloadInfo.isAcceptRanges()){
+                if (mDownloadInfo.getAcceptRanges()){
                     thread.pause();
                 }else {
                     thread.cancel();
@@ -203,9 +204,10 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
 
     //
     private List<ThreadInfo> getMultiThreadInfos(long length) {
-        // todo init threadInfo from db
-//        final List<ThreadInfo> threadInfos = mDBManager.getThreadInfos(mTag, mRequest.getPackageName(), mRequest.getVersionCode());
-        final List<ThreadInfo> threadInfos = new ArrayList<>();
+        List<ThreadInfo> threadInfos = DBHelper.getInstance().queryThreadInfos(mDownloadInfo.getTag());
+        if (null == threadInfos){
+            threadInfos = new ArrayList<>();
+        }
         if (threadInfos.isEmpty()) {
             final int threadNum = DownloadConfig.getInstance().getThreadNum();
             for (int i = 0; i < threadNum; i++) {
@@ -220,6 +222,7 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
                 }
                 ThreadInfo threadInfo = new ThreadInfo(i, mDownloadInfo.getTag(), mDownloadInfo.getUrl(), start, end, 0, 0);
                 threadInfos.add(threadInfo);
+                DBHelper.getInstance().newOrUpdate(threadInfo);
             }
         }
         return threadInfos;
@@ -319,8 +322,8 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
     }
 
     private void deleteFromDB() {
-        //todo 删除 ThreadInfo记录
-//        mDBManager.delete(mTag);
+        DBHelper.getInstance().deleteThreadInfoByTag(mDownloadInfo.getTag());
+        DBHelper.getInstance().deleteDownloadInfoByTag(mDownloadInfo.getTag());
     }
 
     private void deleteFile() {

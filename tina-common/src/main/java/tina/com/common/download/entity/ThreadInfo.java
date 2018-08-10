@@ -1,18 +1,21 @@
 package tina.com.common.download.entity;
 
-public class ThreadInfo {
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Generated;
 
+@Entity
+public class ThreadInfo {
+    @Id
     private int id;
+
     private String tag;
+
     private String url;
     private long start;
     private long end;
     private long finished;
     private int status;
-
-    public ThreadInfo() {
-
-    }
 
     public ThreadInfo(int id, String tag, String uri, long finished) {
         this.id = id;
@@ -21,15 +24,30 @@ public class ThreadInfo {
         this.finished = finished;
     }
 
-    public ThreadInfo(int id, String tag, String uri, long start, long end, long finished, int status) {
+    @Generated(hash = 610160239)
+    public ThreadInfo(int id, String tag, String url, long start, long end, long finished, int status) {
         this.id = id;
         this.tag = tag;
-        this.url = uri;
+        this.url = url;
         this.start = start;
         this.end = end;
         this.finished = finished;
         this.status = status;
     }
+
+    @Generated(hash = 930225280)
+    public ThreadInfo() {
+    }
+
+//    public ThreadInfo(int id, String tag, String uri, long start, long end, long finished, int status) {
+//        this.id = id;
+//        this.tag = tag;
+//        this.url = uri;
+//        this.start = start;
+//        this.end = end;
+//        this.finished = finished;
+//        this.status = status;
+//    }
 
     public int getStatus() {
         return status;

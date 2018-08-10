@@ -1,10 +1,10 @@
-package tina.com.common.download;
+package tina.com.common.downloadback;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import tina.com.common.download.buffer.DownInfo;
-import tina.com.common.download.buffer.DownState;
 import tina.com.common.download.utils.UnifiedErrorUtil;
+import tina.com.common.downloadback.buffer.DownInfo;
+import tina.com.common.downloadback.buffer.DownState;
 
 /**
  * @author: 小民

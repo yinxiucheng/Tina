@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
+import tina.com.common.download.data.DBHelper;
 import tina.com.common.download.entity.DownloadInfo;
 import tina.com.common.download.entity.ThreadInfo;
 
@@ -37,11 +38,12 @@ public class MutileDownloadThread extends DownloadThread {
 
     @Override
     protected void insertIntoDB(ThreadInfo threadInfo) {
-
+        DBHelper.getInstance().newOrUpdate(threadInfo);
     }
 
     @Override
-    protected void updateDB(ThreadInfo info) {
+    protected void updateDB(ThreadInfo threadInfo) {
+        DBHelper.getInstance().newOrUpdate(threadInfo);
     }
 
     protected RandomAccessFile getFile(File dir, String name, long offset) throws IOException {

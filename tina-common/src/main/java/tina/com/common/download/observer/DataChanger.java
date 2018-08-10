@@ -4,9 +4,11 @@ import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 
+import tina.com.common.download.data.DBHelper;
 import tina.com.common.download.entity.DownloadInfo;
 import tina.com.common.download.entity.DownloadStatus;
 
@@ -37,13 +39,13 @@ public class DataChanger extends Observable {
 
     public void postStatus(DownloadInfo downloadInfo){
         mOperateDownloadInfoList.put(downloadInfo.tag, downloadInfo);
-        //todo 数据库插入或更新
+        DBHelper.getInstance().newOrUpdate(downloadInfo);
         setChanged();
         notifyObservers(downloadInfo);
     }
 
-    public ArrayList<DownloadInfo> queryAllRecoverableEntries() {
-        ArrayList<DownloadInfo> mRecoverableEntries = null;
+    public List<DownloadInfo> queryAllRecoverableEntries() {
+        List<DownloadInfo> mRecoverableEntries = DBHelper.getInstance().queryDownloadInfoAll();
         for (Map.Entry<String, DownloadInfo> entry : mOperateDownloadInfoList.entrySet()) {
             if (entry.getValue().status == DownloadStatus.PAUSED) {
                 if (mRecoverableEntries == null) {
@@ -70,7 +72,7 @@ public class DataChanger extends Observable {
     public void deleteDownloadEntry(String tag){
         mOperateDownloadInfoList.remove(tag);
         //todo 数据库删除
-//        DBController.getInstance(context).deleteById(id);
+      DBHelper.getInstance().deleteDownloadInfoByTag(tag);
     }
 
 

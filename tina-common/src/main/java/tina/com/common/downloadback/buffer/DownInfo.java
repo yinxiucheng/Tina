@@ -1,4 +1,4 @@
-package tina.com.common.download.buffer;
+package tina.com.common.downloadback.buffer;
 
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -8,7 +8,8 @@ import org.greenrobot.greendao.annotation.Transient;
 
 import java.util.Random;
 
-import tina.com.common.download.DownResultListenner;
+import tina.com.common.downloadback.DownResultListenner;
+
 
 /**
  * @author: 小民
