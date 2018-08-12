@@ -186,7 +186,7 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
     private void initDownloadTasks(long length, boolean acceptRanges) {
         mDownloadThreadList.clear();
         if (acceptRanges) {
-            List<ThreadInfo> threadInfos = getMultiThreadInfos(length);
+            threadInfos = getMultiThreadInfos(length);
             // init finished
             int finished = 0;
             for (ThreadInfo threadInfo : threadInfos) {

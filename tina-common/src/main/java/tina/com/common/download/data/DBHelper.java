@@ -177,7 +177,4 @@ public class DBHelper {
 //        return threadInfo;
 //    }
 
-
-
-
 }

@@ -29,19 +29,13 @@ public class SingleDownloadThread extends DownloadThread {
     public SingleDownloadThread(DownloadInfo downloadInfo, ThreadInfo threadInfo, DownloadThread.OnDownloadListener downloadListener) {
         super(downloadInfo, threadInfo, downloadListener);
     }
-
-    @Override
-    protected void insertIntoDB(ThreadInfo info) {
-        // don't support
-    }
-
     @Override
     protected int getResponseCode() {
         return HttpURLConnection.HTTP_OK;
     }
 
     @Override
-    protected void updateDB(ThreadInfo info) {
+    protected void newOrUpdate(ThreadInfo info) {
         // needn't Override this
     }
 

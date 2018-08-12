@@ -39,13 +39,9 @@ public class MutileDownloadThread extends DownloadThread {
         return HttpURLConnection.HTTP_PARTIAL;
     }
 
-    @Override
-    protected void insertIntoDB(ThreadInfo threadInfo) {
-        executor.execute(() -> DBHelper.getInstance().newOrUpdateThreadInfo(threadInfo));
-    }
 
     @Override
-    protected void updateDB(ThreadInfo threadInfo) {
+    protected void newOrUpdate(ThreadInfo threadInfo) {
         executor.execute(() -> DBHelper.getInstance().newOrUpdateThreadInfo(threadInfo));
     }
 

@@ -49,13 +49,12 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
 
     public void startDownload() {
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-        insertIntoDB(mThreadInfo);
         try {
             mStatus = DownloadStatus.DOWNLOADING;
             mThreadInfo.setStatus(DownloadStatus.DOWNLOADING);
             mDownloadInfo.setStatus(DownloadStatus.DOWNLOADING);
 
-            updateDB(mThreadInfo);
+            newOrUpdate(mThreadInfo);
             executeDownload();
             synchronized (mOnDownloadListener) {
                 mStatus = DownloadStatus.COMPLETED;
@@ -87,7 +86,7 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
     public boolean isComplete() {
         if (mStatus == DownloadStatus.COMPLETED){
             mThreadInfo.setStatus(DownloadStatus.COMPLETED);
-            updateDB(mThreadInfo);
+            newOrUpdate(mThreadInfo);
             return true;
         }
         return false;
@@ -103,7 +102,7 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
     public boolean isCanceled() {
         if (mStatus == DownloadStatus.CANCELED){
             mThreadInfo.setStatus(DownloadStatus.CANCELED);
-            updateDB(mThreadInfo);
+            newOrUpdate(mThreadInfo);
             return true;
         }
         return false;
@@ -113,7 +112,7 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
     public boolean isFailed() {
         if (mStatus == DownloadStatus.FAILED){
             mThreadInfo.setStatus(DownloadStatus.FAILED);
-            updateDB(mThreadInfo);
+            newOrUpdate(mThreadInfo);
             return true;
         }
         return false;
@@ -207,7 +206,7 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
             // cancel
             throw new DownloadException(DownloadStatus.CANCELED, "Download canceled!");
         } else if (mCommend == DownloadStatus.PAUSED) {
-            updateDB(mThreadInfo);
+            newOrUpdate(mThreadInfo);
             throw new DownloadException(DownloadStatus.PAUSED, "Download paused!");
         }
     }
@@ -235,7 +234,7 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
                     mOnDownloadListener.onDownloadProgress(mDownloadInfo.getFinish(), mDownloadInfo.getLength());
                 }
             } catch (IOException e) {
-                updateDB(mThreadInfo);
+                newOrUpdate(mThreadInfo);
                 throw new DownloadException(DownloadStatus.FAILED, e);
             }
         }
@@ -255,8 +254,6 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
 
     protected abstract int getResponseCode();
 
-    protected abstract void insertIntoDB(ThreadInfo threadInfo);
-
-    protected abstract void updateDB(ThreadInfo info);
+    protected abstract void newOrUpdate(ThreadInfo info);
 
 }

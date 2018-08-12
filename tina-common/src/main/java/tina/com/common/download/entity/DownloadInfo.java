@@ -2,13 +2,13 @@ package tina.com.common.download.entity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.OrderBy;
 import org.greenrobot.greendao.annotation.ToMany;
 import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.File;
 import java.io.Serializable;
 import java.text.DecimalFormat;
-import java.util.HashMap;
 import java.util.List;
 
 import tina.com.common.download.utils.DownloadConfig;
@@ -28,6 +28,8 @@ public class DownloadInfo implements Serializable{
     static final long serialVersionUID = 42L;
     @Id
     public String tag;
+
+    public int index;
 
     public String fileName;
 
@@ -59,7 +61,8 @@ public class DownloadInfo implements Serializable{
     
     public DownloadInfo(){}
 
-    public DownloadInfo(String name, String fileName, String iamge, String url,File file) {
+    public DownloadInfo(int index, String name, String fileName, String iamge, String url,File file) {
+        this.index = index;
         this.name = name;
         this.fileName = fileName;
         this.image = iamge;
@@ -67,11 +70,11 @@ public class DownloadInfo implements Serializable{
         this.dir = file;
     }
 
-    @Generated(hash = 1756508593)
-    public DownloadInfo(String tag, String fileName, String url, long finish, long length, int status,
-            int progress, String name, boolean acceptRanges, String image, String packageName,
-            String versionCode) {
+    @Generated(hash = 146078028)
+    public DownloadInfo(String tag, int index, String fileName, String url, long finish, long length, int status,
+            int progress, String name, boolean acceptRanges, String image, String packageName, String versionCode) {
         this.tag = tag;
+        this.index = index;
         this.fileName = fileName;
         this.url = url;
         this.finish = finish;
@@ -84,7 +87,6 @@ public class DownloadInfo implements Serializable{
         this.packageName = packageName;
         this.versionCode = versionCode;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -113,7 +115,6 @@ public class DownloadInfo implements Serializable{
     public String toString() {
         return fileName + ":" + getDownloadPerSize() + "::" + DownloadStatus.getStausText(status) + ":" + progress ;
     }
-
     private static final DecimalFormat DF = new DecimalFormat("0.00");
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
@@ -132,6 +133,14 @@ public class DownloadInfo implements Serializable{
         if (file.exists()){
             file.delete();
         }
+    }
+
+    public int getIndex() {
+        return this.index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
     }
 
     public String getFileName() {
