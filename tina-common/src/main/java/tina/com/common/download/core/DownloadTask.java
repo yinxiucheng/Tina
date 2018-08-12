@@ -323,7 +323,7 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
 
     private void deleteFromDB() {
 //        DBHelper.getInstance().deleteThreadInfoByTag(mDownloadInfo.getTag());
-        DBHelper.getInstance().deleteDownloadInfoByTag(mDownloadInfo.getTag());
+//        DBHelper.getInstance().deleteDownloadInfoByTag(mDownloadInfo.getTag());
     }
 
     private void deleteFile() {

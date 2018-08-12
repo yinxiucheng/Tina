@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Observable;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import tina.com.common.download.data.DBHelper;
 import tina.com.common.download.entity.DownloadInfo;
@@ -20,10 +22,12 @@ public class DataChanger extends Observable {
     private volatile static DataChanger dataWatcher;
     private Context context;
     private LinkedHashMap<String, DownloadInfo> mOperateDownloadInfoList;
+    private Executor executor;
 
     private DataChanger(Context context){
         this.context = context;
         mOperateDownloadInfoList = new LinkedHashMap<>();
+        executor = Executors.newSingleThreadExecutor();
     }
 
     public static synchronized DataChanger getInstance(Context context){
@@ -39,7 +43,7 @@ public class DataChanger extends Observable {
 
     public void postStatus(DownloadInfo downloadInfo){
         mOperateDownloadInfoList.put(downloadInfo.tag, downloadInfo);
-        DBHelper.getInstance().newOrUpdate(downloadInfo);
+        executor.execute(() -> DBHelper.getInstance().newOrUpdate(downloadInfo));
         setChanged();
         notifyObservers(downloadInfo);
     }
