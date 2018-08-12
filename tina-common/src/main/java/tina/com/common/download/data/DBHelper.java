@@ -99,7 +99,8 @@ public class DBHelper {
         if (null == mDownloadInfoDao){
             getDownloadInfoDao();
         }
-        return mDownloadInfoDao.loadAll();
+//        return mDownloadInfoDao.loadAll();
+        return mDownloadInfoDao.queryBuilder().where(DownloadInfoDao.Properties.Index.isNotNull()).orderAsc(DownloadInfoDao.Properties.Index).list();
     }
 
     /**

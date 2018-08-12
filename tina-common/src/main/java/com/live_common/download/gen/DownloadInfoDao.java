@@ -25,17 +25,18 @@ public class DownloadInfoDao extends AbstractDao<DownloadInfo, String> {
      */
     public static class Properties {
         public final static Property Tag = new Property(0, String.class, "tag", true, "TAG");
-        public final static Property FileName = new Property(1, String.class, "fileName", false, "FILE_NAME");
-        public final static Property Url = new Property(2, String.class, "url", false, "URL");
-        public final static Property Finish = new Property(3, long.class, "finish", false, "FINISH");
-        public final static Property Length = new Property(4, long.class, "length", false, "LENGTH");
-        public final static Property Status = new Property(5, int.class, "status", false, "STATUS");
-        public final static Property Progress = new Property(6, int.class, "progress", false, "PROGRESS");
-        public final static Property Name = new Property(7, String.class, "name", false, "NAME");
-        public final static Property AcceptRanges = new Property(8, boolean.class, "acceptRanges", false, "ACCEPT_RANGES");
-        public final static Property Image = new Property(9, String.class, "image", false, "IMAGE");
-        public final static Property PackageName = new Property(10, String.class, "packageName", false, "PACKAGE_NAME");
-        public final static Property VersionCode = new Property(11, String.class, "versionCode", false, "VERSION_CODE");
+        public final static Property Index = new Property(1, int.class, "index", false, "INDEX");
+        public final static Property FileName = new Property(2, String.class, "fileName", false, "FILE_NAME");
+        public final static Property Url = new Property(3, String.class, "url", false, "URL");
+        public final static Property Finish = new Property(4, long.class, "finish", false, "FINISH");
+        public final static Property Length = new Property(5, long.class, "length", false, "LENGTH");
+        public final static Property Status = new Property(6, int.class, "status", false, "STATUS");
+        public final static Property Progress = new Property(7, int.class, "progress", false, "PROGRESS");
+        public final static Property Name = new Property(8, String.class, "name", false, "NAME");
+        public final static Property AcceptRanges = new Property(9, boolean.class, "acceptRanges", false, "ACCEPT_RANGES");
+        public final static Property Image = new Property(10, String.class, "image", false, "IMAGE");
+        public final static Property PackageName = new Property(11, String.class, "packageName", false, "PACKAGE_NAME");
+        public final static Property VersionCode = new Property(12, String.class, "versionCode", false, "VERSION_CODE");
     }
 
     private DaoSession daoSession;
@@ -55,17 +56,18 @@ public class DownloadInfoDao extends AbstractDao<DownloadInfo, String> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"DOWNLOAD_INFO\" (" + //
                 "\"TAG\" TEXT PRIMARY KEY NOT NULL ," + // 0: tag
-                "\"FILE_NAME\" TEXT," + // 1: fileName
-                "\"URL\" TEXT," + // 2: url
-                "\"FINISH\" INTEGER NOT NULL ," + // 3: finish
-                "\"LENGTH\" INTEGER NOT NULL ," + // 4: length
-                "\"STATUS\" INTEGER NOT NULL ," + // 5: status
-                "\"PROGRESS\" INTEGER NOT NULL ," + // 6: progress
-                "\"NAME\" TEXT," + // 7: name
-                "\"ACCEPT_RANGES\" INTEGER NOT NULL ," + // 8: acceptRanges
-                "\"IMAGE\" TEXT," + // 9: image
-                "\"PACKAGE_NAME\" TEXT," + // 10: packageName
-                "\"VERSION_CODE\" TEXT);"); // 11: versionCode
+                "\"INDEX\" INTEGER NOT NULL ," + // 1: index
+                "\"FILE_NAME\" TEXT," + // 2: fileName
+                "\"URL\" TEXT," + // 3: url
+                "\"FINISH\" INTEGER NOT NULL ," + // 4: finish
+                "\"LENGTH\" INTEGER NOT NULL ," + // 5: length
+                "\"STATUS\" INTEGER NOT NULL ," + // 6: status
+                "\"PROGRESS\" INTEGER NOT NULL ," + // 7: progress
+                "\"NAME\" TEXT," + // 8: name
+                "\"ACCEPT_RANGES\" INTEGER NOT NULL ," + // 9: acceptRanges
+                "\"IMAGE\" TEXT," + // 10: image
+                "\"PACKAGE_NAME\" TEXT," + // 11: packageName
+                "\"VERSION_CODE\" TEXT);"); // 12: versionCode
     }
 
     /** Drops the underlying database table. */
@@ -82,40 +84,41 @@ public class DownloadInfoDao extends AbstractDao<DownloadInfo, String> {
         if (tag != null) {
             stmt.bindString(1, tag);
         }
+        stmt.bindLong(2, entity.getIndex());
  
         String fileName = entity.getFileName();
         if (fileName != null) {
-            stmt.bindString(2, fileName);
+            stmt.bindString(3, fileName);
         }
  
         String url = entity.getUrl();
         if (url != null) {
-            stmt.bindString(3, url);
+            stmt.bindString(4, url);
         }
-        stmt.bindLong(4, entity.getFinish());
-        stmt.bindLong(5, entity.getLength());
-        stmt.bindLong(6, entity.getStatus());
-        stmt.bindLong(7, entity.getProgress());
+        stmt.bindLong(5, entity.getFinish());
+        stmt.bindLong(6, entity.getLength());
+        stmt.bindLong(7, entity.getStatus());
+        stmt.bindLong(8, entity.getProgress());
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(8, name);
+            stmt.bindString(9, name);
         }
-        stmt.bindLong(9, entity.getAcceptRanges() ? 1L: 0L);
+        stmt.bindLong(10, entity.getAcceptRanges() ? 1L: 0L);
  
         String image = entity.getImage();
         if (image != null) {
-            stmt.bindString(10, image);
+            stmt.bindString(11, image);
         }
  
         String packageName = entity.getPackageName();
         if (packageName != null) {
-            stmt.bindString(11, packageName);
+            stmt.bindString(12, packageName);
         }
  
         String versionCode = entity.getVersionCode();
         if (versionCode != null) {
-            stmt.bindString(12, versionCode);
+            stmt.bindString(13, versionCode);
         }
     }
 
@@ -127,40 +130,41 @@ public class DownloadInfoDao extends AbstractDao<DownloadInfo, String> {
         if (tag != null) {
             stmt.bindString(1, tag);
         }
+        stmt.bindLong(2, entity.getIndex());
  
         String fileName = entity.getFileName();
         if (fileName != null) {
-            stmt.bindString(2, fileName);
+            stmt.bindString(3, fileName);
         }
  
         String url = entity.getUrl();
         if (url != null) {
-            stmt.bindString(3, url);
+            stmt.bindString(4, url);
         }
-        stmt.bindLong(4, entity.getFinish());
-        stmt.bindLong(5, entity.getLength());
-        stmt.bindLong(6, entity.getStatus());
-        stmt.bindLong(7, entity.getProgress());
+        stmt.bindLong(5, entity.getFinish());
+        stmt.bindLong(6, entity.getLength());
+        stmt.bindLong(7, entity.getStatus());
+        stmt.bindLong(8, entity.getProgress());
  
         String name = entity.getName();
         if (name != null) {
-            stmt.bindString(8, name);
+            stmt.bindString(9, name);
         }
-        stmt.bindLong(9, entity.getAcceptRanges() ? 1L: 0L);
+        stmt.bindLong(10, entity.getAcceptRanges() ? 1L: 0L);
  
         String image = entity.getImage();
         if (image != null) {
-            stmt.bindString(10, image);
+            stmt.bindString(11, image);
         }
  
         String packageName = entity.getPackageName();
         if (packageName != null) {
-            stmt.bindString(11, packageName);
+            stmt.bindString(12, packageName);
         }
  
         String versionCode = entity.getVersionCode();
         if (versionCode != null) {
-            stmt.bindString(12, versionCode);
+            stmt.bindString(13, versionCode);
         }
     }
 
@@ -179,17 +183,18 @@ public class DownloadInfoDao extends AbstractDao<DownloadInfo, String> {
     public DownloadInfo readEntity(Cursor cursor, int offset) {
         DownloadInfo entity = new DownloadInfo( //
             cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0), // tag
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // fileName
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // url
-            cursor.getLong(offset + 3), // finish
-            cursor.getLong(offset + 4), // length
-            cursor.getInt(offset + 5), // status
-            cursor.getInt(offset + 6), // progress
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // name
-            cursor.getShort(offset + 8) != 0, // acceptRanges
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // image
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // packageName
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // versionCode
+            cursor.getInt(offset + 1), // index
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // fileName
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // url
+            cursor.getLong(offset + 4), // finish
+            cursor.getLong(offset + 5), // length
+            cursor.getInt(offset + 6), // status
+            cursor.getInt(offset + 7), // progress
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // name
+            cursor.getShort(offset + 9) != 0, // acceptRanges
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // image
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // packageName
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // versionCode
         );
         return entity;
     }
@@ -197,17 +202,18 @@ public class DownloadInfoDao extends AbstractDao<DownloadInfo, String> {
     @Override
     public void readEntity(Cursor cursor, DownloadInfo entity, int offset) {
         entity.setTag(cursor.isNull(offset + 0) ? null : cursor.getString(offset + 0));
-        entity.setFileName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setUrl(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setFinish(cursor.getLong(offset + 3));
-        entity.setLength(cursor.getLong(offset + 4));
-        entity.setStatus(cursor.getInt(offset + 5));
-        entity.setProgress(cursor.getInt(offset + 6));
-        entity.setName(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setAcceptRanges(cursor.getShort(offset + 8) != 0);
-        entity.setImage(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setPackageName(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setVersionCode(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setIndex(cursor.getInt(offset + 1));
+        entity.setFileName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setUrl(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setFinish(cursor.getLong(offset + 4));
+        entity.setLength(cursor.getLong(offset + 5));
+        entity.setStatus(cursor.getInt(offset + 6));
+        entity.setProgress(cursor.getInt(offset + 7));
+        entity.setName(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setAcceptRanges(cursor.getShort(offset + 9) != 0);
+        entity.setImage(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setPackageName(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setVersionCode(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
      }
     
     @Override
