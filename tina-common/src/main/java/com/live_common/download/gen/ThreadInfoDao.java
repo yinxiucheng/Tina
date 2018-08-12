@@ -1,6 +1,5 @@
 package com.live_common.download.gen;
 
-import java.util.List;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
@@ -9,8 +8,6 @@ import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.internal.DaoConfig;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseStatement;
-import org.greenrobot.greendao.query.Query;
-import org.greenrobot.greendao.query.QueryBuilder;
 
 import tina.com.common.download.entity.ThreadInfo;
 
@@ -37,7 +34,6 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
         public final static Property Status = new Property(7, int.class, "status", false, "STATUS");
     }
 
-    private Query<ThreadInfo> downloadInfo_ThreadInfoListQuery;
 
     public ThreadInfoDao(DaoConfig config) {
         super(config);
@@ -51,7 +47,7 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"THREAD_INFO\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ," + // 0: _id
+                "\"_id\" INTEGER PRIMARY KEY NOT NULL ," + // 0: _id
                 "\"INDEX\" INTEGER NOT NULL ," + // 1: index
                 "\"TAG\" TEXT," + // 2: tag
                 "\"URL\" TEXT," + // 3: url
@@ -166,18 +162,4 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
         return true;
     }
     
-    /** Internal query to resolve the "threadInfoList" to-many relationship of DownloadInfo. */
-    public List<ThreadInfo> _queryDownloadInfo_ThreadInfoList(String tag) {
-        synchronized (this) {
-            if (downloadInfo_ThreadInfoListQuery == null) {
-                QueryBuilder<ThreadInfo> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.Tag.eq(null));
-                downloadInfo_ThreadInfoListQuery = queryBuilder.build();
-            }
-        }
-        Query<ThreadInfo> query = downloadInfo_ThreadInfoListQuery.forCurrentThread();
-        query.setParameter(0, tag);
-        return query.list();
-    }
-
 }

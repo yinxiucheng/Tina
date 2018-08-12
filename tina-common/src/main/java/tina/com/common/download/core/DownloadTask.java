@@ -222,7 +222,7 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
                 }
                 ThreadInfo threadInfo = new ThreadInfo(i, mDownloadInfo.getTag(), mDownloadInfo.getUrl(), start, end, 0, 0);
                 threadInfos.add(threadInfo);
-//                DBHelper.getInstance().newOrUpdate(threadInfo);
+                mExecutor.execute(() -> DBHelper.getInstance().newOrUpdateThreadInfo(threadInfo));
             }
         }
         return threadInfos;

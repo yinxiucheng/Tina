@@ -74,11 +74,10 @@ public class DBHelper {
        return mDownloadInfoDao;
     }
 
-//    private ThreadInfoDao getThreadInfoDao(){
-//        mThreadInfoDao = daoSession.getThreadInfoDao();
-//        return mThreadInfoDao;
-//    }
-
+    private ThreadInfoDao getThreadInfoDao(){
+        mThreadInfoDao = daoSession.getThreadInfoDao();
+        return mThreadInfoDao;
+    }
 
     public void insertDownloadInfoTX(List<DownloadInfo> downloadInfos){
         if (null == mDownloadInfoDao){
@@ -132,14 +131,14 @@ public class DBHelper {
         }
     }
 
-//    public void newOrUpdate(ThreadInfo threadInfo){
-//        if (null == mThreadInfoDao){
-//            getThreadInfoDao();
-//        }
-//        synchronized (_tlock){
-//            mThreadInfoDao.insertOrReplace(threadInfo);
-//        }
-//    }
+    public void newOrUpdateThreadInfo(ThreadInfo threadInfo){
+        if (null == mThreadInfoDao){
+            getThreadInfoDao();
+        }
+        synchronized (_tlock){
+            mThreadInfoDao.insertOrReplace(threadInfo);
+        }
+    }
 
     public void deleteDownloadInfoByTag(String tag) {
         if (null == mDownloadInfoDao){

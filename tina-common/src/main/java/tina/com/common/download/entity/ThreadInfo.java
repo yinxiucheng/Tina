@@ -4,10 +4,10 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
-
+@Entity
 public class ThreadInfo {
 
-
+    @Id
     private long _id;
 
     private int index;
@@ -52,6 +52,7 @@ public class ThreadInfo {
     @Generated(hash = 930225280)
     public ThreadInfo() {
     }
+
 
     @Override
     public String toString() {
@@ -128,5 +129,6 @@ public class ThreadInfo {
     public void setStatus(int status) {
         this.status = status;
     }
+
 
 }

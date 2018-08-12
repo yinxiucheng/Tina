@@ -6,6 +6,8 @@ import java.io.RandomAccessFile;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import tina.com.common.download.data.DBHelper;
 import tina.com.common.download.entity.DownloadInfo;
@@ -17,9 +19,11 @@ import tina.com.common.download.entity.ThreadInfo;
  */
 public class MutileDownloadThread extends DownloadThread {
 
+    Executor executor;
 
     public MutileDownloadThread(DownloadInfo downloadInfo, ThreadInfo threadInfo, OnDownloadListener downloadListener) {
         super(downloadInfo, threadInfo, downloadListener);
+        executor = Executors.newSingleThreadExecutor();
     }
 
     protected Map<String, String> getHttpHeaders(ThreadInfo info) {
@@ -38,12 +42,13 @@ public class MutileDownloadThread extends DownloadThread {
 
     @Override
     protected void insertIntoDB(ThreadInfo threadInfo) {
-//        DBHelper.getInstance().newOrUpdate(threadInfo);
+        executor.execute(() -> DBHelper.getInstance().newOrUpdateThreadInfo(threadInfo));
     }
 
     @Override
     protected void updateDB(ThreadInfo threadInfo) {
-//        DBHelper.getInstance().newOrUpdate(threadInfo);
+        executor.execute(() -> DBHelper.getInstance().newOrUpdateThreadInfo(threadInfo));
+
     }
 
     protected RandomAccessFile getFile(File dir, String name, long offset) throws IOException {
