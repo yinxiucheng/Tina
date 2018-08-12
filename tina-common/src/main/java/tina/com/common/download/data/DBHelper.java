@@ -24,8 +24,6 @@ public class DBHelper {
 
     private static final String DB_NAME = "tina_download";
 
-    private DaoMaster daoMaster;
-
     private DaoSession daoSession;
 
     private SQLiteDatabase mWritableDatabase;
@@ -33,11 +31,6 @@ public class DBHelper {
     private DownloadInfoDao mDownloadInfoDao;
 
     private ThreadInfoDao mThreadInfoDao;
-
-    private Object _dlock = new Object();
-
-    private Object _tlock = new Object();
-
 
     public static DBHelper getInstance(){
         if (null == instance){
@@ -91,12 +84,12 @@ public class DBHelper {
      * @param tag
      * @return
      */
-//    public List<ThreadInfo> getThreadInfoListByTag(String tag){
-//        if (null == mThreadInfoDao){
-//            getThreadInfoDao();
-//        }
-//        return mThreadInfoDao._queryDownloadInfo_ThreadInfoList(tag);
-//    }
+    public List<ThreadInfo> queryThreadInfoListByTag(String tag){
+        if (null == mThreadInfoDao){
+            getThreadInfoDao();
+        }
+        return mThreadInfoDao._queryDownloadInfo_ThreadInfoList(tag);
+    }
 
     /**
      * 获取所有的 DownloadInfo
@@ -126,27 +119,29 @@ public class DBHelper {
         if (null == mDownloadInfoDao){
             getDownloadInfoDao();
         }
-        synchronized (_dlock){
-            mDownloadInfoDao.insertOrReplace(downloadInfo);
+        mDownloadInfoDao.insertOrReplace(downloadInfo);
+    }
+
+    public void insertThreadInfoList(List<ThreadInfo> threadInfos){
+        if (null == mThreadInfoDao){
+            getThreadInfoDao();
         }
+        mThreadInfoDao.insertInTx(threadInfos, true);
     }
 
     public void newOrUpdateThreadInfo(ThreadInfo threadInfo){
         if (null == mThreadInfoDao){
             getThreadInfoDao();
         }
-        synchronized (_tlock){
-            mThreadInfoDao.insertOrReplace(threadInfo);
-        }
+        mThreadInfoDao.insertOrReplace(threadInfo);
     }
 
     public void deleteDownloadInfoByTag(String tag) {
         if (null == mDownloadInfoDao){
             getDownloadInfoDao();
         }
-        synchronized (_dlock){
-            mDownloadInfoDao.deleteByKey(tag);
-        }
+
+        mDownloadInfoDao.deleteByKey(tag);
     }
 
 //    public void deleteThreadInfoByTag(String tag) {
@@ -165,13 +160,6 @@ public class DBHelper {
      * @param tag
      * @return
      */
-//    public List<ThreadInfo> queryThreadInfos(String tag) {
-//        if (null == mThreadInfoDao){
-//            getThreadInfoDao();
-//        }
-//        List<ThreadInfo> list = mThreadInfoDao.queryBuilder().where(ThreadInfoDao.Properties.Tag.eq(tag)).list();
-//        return list;
-//    }
 
     /**
      * 查询单个ThreadInfo

@@ -34,7 +34,6 @@ public class MutileDownloadThread extends DownloadThread {
         return headers;
     }
 
-
     @Override
     protected int getResponseCode() {
         return HttpURLConnection.HTTP_PARTIAL;
@@ -48,7 +47,6 @@ public class MutileDownloadThread extends DownloadThread {
     @Override
     protected void updateDB(ThreadInfo threadInfo) {
         executor.execute(() -> DBHelper.getInstance().newOrUpdateThreadInfo(threadInfo));
-
     }
 
     protected RandomAccessFile getFile(File dir, String name, long offset) throws IOException {
@@ -57,6 +55,4 @@ public class MutileDownloadThread extends DownloadThread {
         raf.seek(offset);
         return raf;
     }
-
-
 }

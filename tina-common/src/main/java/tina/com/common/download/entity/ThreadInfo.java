@@ -7,8 +7,8 @@ import org.greenrobot.greendao.annotation.Generated;
 @Entity
 public class ThreadInfo {
 
-    @Id
-    private long _id;
+    @Id(autoincrement = true)
+    private Long _id;
 
     private int index;
     private String tag;
@@ -36,8 +36,8 @@ public class ThreadInfo {
         this.status = status;
     }
 
-    @Generated(hash = 789514427)
-    public ThreadInfo(long _id, int index, String tag, String url, long start,
+    @Generated(hash = 996795298)
+    public ThreadInfo(Long _id, int index, String tag, String url, long start,
             long end, long finished, int status) {
         this._id = _id;
         this.index = index;
@@ -66,11 +66,11 @@ public class ThreadInfo {
                 '}';
     }
 
-    public long get_id() {
+    public Long get_id() {
         return this._id;
     }
 
-    public void set_id(long _id) {
+    public void set_id(Long _id) {
         this._id = _id;
     }
 
@@ -129,6 +129,7 @@ public class ThreadInfo {
     public void setStatus(int status) {
         this.status = status;
     }
+
 
 
 }

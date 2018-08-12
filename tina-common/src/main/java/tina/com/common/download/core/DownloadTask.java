@@ -34,6 +34,8 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
 
     ConnectThread mConnectThread;
 
+    List<ThreadInfo> threadInfos;
+
     private int mStatus;
 
     private List<DownloadThread> mDownloadThreadList;
@@ -164,10 +166,8 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
     @Override
     public void onConnectFailed(DownloadException de) {
         if (mConnectThread.isCanceled()) {
-            // despite connection is failed, the entire downloader is canceled
             onConnectCanceled();
         } else if (mConnectThread.isPaused()) {
-            // despite connection is failed, the entire downloader is paused
             onDownloadPaused();
         } else {
             setStatusAndNotify(DownloadStatus.FAILED, DownloadService.NOTIFY_DOWNLOAD_ERROR);
@@ -202,9 +202,11 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
         }
     }
 
-    //
     private List<ThreadInfo> getMultiThreadInfos(long length) {
-        List<ThreadInfo> threadInfos = null;
+        if (threadInfos != null){
+            threadInfos.clear();
+        }
+        threadInfos = DBHelper.getInstance().queryThreadInfoListByTag(mDownloadInfo.getTag());
         if (null == threadInfos){
             threadInfos = new ArrayList<>();
         }
@@ -222,8 +224,10 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
                 }
                 ThreadInfo threadInfo = new ThreadInfo(i, mDownloadInfo.getTag(), mDownloadInfo.getUrl(), start, end, 0, 0);
                 threadInfos.add(threadInfo);
-                mExecutor.execute(() -> DBHelper.getInstance().newOrUpdateThreadInfo(threadInfo));
             }
+            mExecutor.execute(() -> {
+                DBHelper.getInstance().insertThreadInfoList(threadInfos);
+            });
         }
         return threadInfos;
     }

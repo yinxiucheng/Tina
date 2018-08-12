@@ -1,5 +1,6 @@
 package com.live_common.download.gen;
 
+import java.util.List;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteStatement;
 
@@ -8,6 +9,8 @@ import org.greenrobot.greendao.Property;
 import org.greenrobot.greendao.internal.DaoConfig;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseStatement;
+import org.greenrobot.greendao.query.Query;
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import tina.com.common.download.entity.ThreadInfo;
 
@@ -24,7 +27,7 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property _id = new Property(0, long.class, "_id", true, "_id");
+        public final static Property _id = new Property(0, Long.class, "_id", true, "_id");
         public final static Property Index = new Property(1, int.class, "index", false, "INDEX");
         public final static Property Tag = new Property(2, String.class, "tag", false, "TAG");
         public final static Property Url = new Property(3, String.class, "url", false, "URL");
@@ -34,6 +37,7 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
         public final static Property Status = new Property(7, int.class, "status", false, "STATUS");
     }
 
+    private Query<ThreadInfo> downloadInfo_ThreadInfoListQuery;
 
     public ThreadInfoDao(DaoConfig config) {
         super(config);
@@ -47,7 +51,7 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"THREAD_INFO\" (" + //
-                "\"_id\" INTEGER PRIMARY KEY NOT NULL ," + // 0: _id
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: _id
                 "\"INDEX\" INTEGER NOT NULL ," + // 1: index
                 "\"TAG\" TEXT," + // 2: tag
                 "\"URL\" TEXT," + // 3: url
@@ -66,7 +70,11 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, ThreadInfo entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.get_id());
+ 
+        Long _id = entity.get_id();
+        if (_id != null) {
+            stmt.bindLong(1, _id);
+        }
         stmt.bindLong(2, entity.getIndex());
  
         String tag = entity.getTag();
@@ -87,7 +95,11 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, ThreadInfo entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.get_id());
+ 
+        Long _id = entity.get_id();
+        if (_id != null) {
+            stmt.bindLong(1, _id);
+        }
         stmt.bindLong(2, entity.getIndex());
  
         String tag = entity.getTag();
@@ -107,13 +119,13 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
 
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.getLong(offset + 0);
+        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
     }    
 
     @Override
     public ThreadInfo readEntity(Cursor cursor, int offset) {
         ThreadInfo entity = new ThreadInfo( //
-            cursor.getLong(offset + 0), // _id
+            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // _id
             cursor.getInt(offset + 1), // index
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // tag
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // url
@@ -127,7 +139,7 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
      
     @Override
     public void readEntity(Cursor cursor, ThreadInfo entity, int offset) {
-        entity.set_id(cursor.getLong(offset + 0));
+        entity.set_id(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setIndex(cursor.getInt(offset + 1));
         entity.setTag(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setUrl(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
@@ -154,7 +166,7 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
 
     @Override
     public boolean hasKey(ThreadInfo entity) {
-        throw new UnsupportedOperationException("Unsupported for entities with a non-null key");
+        return entity.get_id() != null;
     }
 
     @Override
@@ -162,4 +174,18 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
         return true;
     }
     
+    /** Internal query to resolve the "threadInfoList" to-many relationship of DownloadInfo. */
+    public List<ThreadInfo> _queryDownloadInfo_ThreadInfoList(String tag) {
+        synchronized (this) {
+            if (downloadInfo_ThreadInfoListQuery == null) {
+                QueryBuilder<ThreadInfo> queryBuilder = queryBuilder();
+                queryBuilder.where(Properties.Tag.eq(null));
+                downloadInfo_ThreadInfoListQuery = queryBuilder.build();
+            }
+        }
+        Query<ThreadInfo> query = downloadInfo_ThreadInfoListQuery.forCurrentThread();
+        query.setParameter(0, tag);
+        return query.list();
+    }
+
 }
