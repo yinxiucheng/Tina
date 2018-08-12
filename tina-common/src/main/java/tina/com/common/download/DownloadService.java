@@ -59,8 +59,6 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
 
     private DataChanger mDataChanger;
 
-//    private DBController mDBController;
-
     private DBHelper mDBHelper;
 
     private int maxQueueLength;
@@ -176,7 +174,7 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
     }
 
     private void initalizeDownload() {
-        List<DownloadInfo> mDownloadEtries = mDBHelper.queryDownloadInfoAll();
+        List<DownloadInfo> mDownloadEtries = DBHelper.getInstance().queryDownloadInfoAll();
         if (mDownloadEtries != null) {
             for (DownloadInfo downloadInfo : mDownloadEtries) {
                 generateKey(downloadInfo);

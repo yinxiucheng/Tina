@@ -9,12 +9,10 @@ import org.greenrobot.greendao.identityscope.IdentityScopeType;
 import org.greenrobot.greendao.internal.DaoConfig;
 
 import tina.com.common.download.entity.DownloadInfo;
-import tina.com.common.download.entity.ThreadInfo;
 import tina.com.common.downloadback.buffer.BufferResulte;
 import tina.com.common.downloadback.buffer.DownInfo;
 
 import com.live_common.download.gen.DownloadInfoDao;
-import com.live_common.download.gen.ThreadInfoDao;
 import com.live_common.download.gen.BufferResulteDao;
 import com.live_common.download.gen.DownInfoDao;
 
@@ -28,12 +26,10 @@ import com.live_common.download.gen.DownInfoDao;
 public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig downloadInfoDaoConfig;
-    private final DaoConfig threadInfoDaoConfig;
     private final DaoConfig bufferResulteDaoConfig;
     private final DaoConfig downInfoDaoConfig;
 
     private final DownloadInfoDao downloadInfoDao;
-    private final ThreadInfoDao threadInfoDao;
     private final BufferResulteDao bufferResulteDao;
     private final DownInfoDao downInfoDao;
 
@@ -44,9 +40,6 @@ public class DaoSession extends AbstractDaoSession {
         downloadInfoDaoConfig = daoConfigMap.get(DownloadInfoDao.class).clone();
         downloadInfoDaoConfig.initIdentityScope(type);
 
-        threadInfoDaoConfig = daoConfigMap.get(ThreadInfoDao.class).clone();
-        threadInfoDaoConfig.initIdentityScope(type);
-
         bufferResulteDaoConfig = daoConfigMap.get(BufferResulteDao.class).clone();
         bufferResulteDaoConfig.initIdentityScope(type);
 
@@ -54,29 +47,22 @@ public class DaoSession extends AbstractDaoSession {
         downInfoDaoConfig.initIdentityScope(type);
 
         downloadInfoDao = new DownloadInfoDao(downloadInfoDaoConfig, this);
-        threadInfoDao = new ThreadInfoDao(threadInfoDaoConfig, this);
         bufferResulteDao = new BufferResulteDao(bufferResulteDaoConfig, this);
         downInfoDao = new DownInfoDao(downInfoDaoConfig, this);
 
         registerDao(DownloadInfo.class, downloadInfoDao);
-        registerDao(ThreadInfo.class, threadInfoDao);
         registerDao(BufferResulte.class, bufferResulteDao);
         registerDao(DownInfo.class, downInfoDao);
     }
     
     public void clear() {
         downloadInfoDaoConfig.clearIdentityScope();
-        threadInfoDaoConfig.clearIdentityScope();
         bufferResulteDaoConfig.clearIdentityScope();
         downInfoDaoConfig.clearIdentityScope();
     }
 
     public DownloadInfoDao getDownloadInfoDao() {
         return downloadInfoDao;
-    }
-
-    public ThreadInfoDao getThreadInfoDao() {
-        return threadInfoDao;
     }
 
     public BufferResulteDao getBufferResulteDao() {

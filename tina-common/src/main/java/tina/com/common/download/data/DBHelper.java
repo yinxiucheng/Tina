@@ -41,7 +41,7 @@ public class DBHelper {
 
     public static DBHelper getInstance(){
         if (null == instance){
-            synchronized (DBHelper.instance){
+            synchronized (DBHelper.class){
                 if (null == instance){
                     instance = new DBHelper(BaseUtils.getContext());
                 }
@@ -74,9 +74,17 @@ public class DBHelper {
        return mDownloadInfoDao;
     }
 
-    private ThreadInfoDao getThreadInfoDao(){
-        mThreadInfoDao = daoSession.getThreadInfoDao();
-        return mThreadInfoDao;
+//    private ThreadInfoDao getThreadInfoDao(){
+//        mThreadInfoDao = daoSession.getThreadInfoDao();
+//        return mThreadInfoDao;
+//    }
+
+
+    public void insertDownloadInfoTX(List<DownloadInfo> downloadInfos){
+        if (null == mDownloadInfoDao){
+            getDownloadInfoDao();
+        }
+        mDownloadInfoDao.insertOrReplaceInTx(downloadInfos, true);
     }
 
     /**
@@ -84,12 +92,12 @@ public class DBHelper {
      * @param tag
      * @return
      */
-    public List<ThreadInfo> getThreadInfoListByTag(String tag){
-        if (null == mThreadInfoDao){
-            getThreadInfoDao();
-        }
-        return mThreadInfoDao._queryDownloadInfo_ThreadInfoList(tag);
-    }
+//    public List<ThreadInfo> getThreadInfoListByTag(String tag){
+//        if (null == mThreadInfoDao){
+//            getThreadInfoDao();
+//        }
+//        return mThreadInfoDao._queryDownloadInfo_ThreadInfoList(tag);
+//    }
 
     /**
      * 获取所有的 DownloadInfo
@@ -105,7 +113,7 @@ public class DBHelper {
     /**
      * 查询单个的 DownloadInfo
      *
-     * @param tag
+//     * @param tag
      * @return
      */
     public DownloadInfo queryDownloadInfo(String tag) {
@@ -114,7 +122,6 @@ public class DBHelper {
         }
         return mDownloadInfoDao.load(tag);
     }
-
 
     public void newOrUpdate(DownloadInfo downloadInfo){
         if (null == mDownloadInfoDao){
@@ -125,14 +132,14 @@ public class DBHelper {
         }
     }
 
-    public void newOrUpdate(ThreadInfo threadInfo){
-        if (null == mThreadInfoDao){
-            getThreadInfoDao();
-        }
-        synchronized (_tlock){
-            mThreadInfoDao.insertOrReplace(threadInfo);
-        }
-    }
+//    public void newOrUpdate(ThreadInfo threadInfo){
+//        if (null == mThreadInfoDao){
+//            getThreadInfoDao();
+//        }
+//        synchronized (_tlock){
+//            mThreadInfoDao.insertOrReplace(threadInfo);
+//        }
+//    }
 
     public void deleteDownloadInfoByTag(String tag) {
         if (null == mDownloadInfoDao){
@@ -143,15 +150,15 @@ public class DBHelper {
         }
     }
 
-    public void deleteThreadInfoByTag(String tag) {
-        if (null == mThreadInfoDao){
-            getThreadInfoDao();
-        }
-        List<ThreadInfo> threadInfos = queryThreadInfos(tag);
-        synchronized (_tlock){
-            mThreadInfoDao.deleteInTx(threadInfos);
-        }
-    }
+//    public void deleteThreadInfoByTag(String tag) {
+//        if (null == mThreadInfoDao){
+//            getThreadInfoDao();
+//        }
+//        List<ThreadInfo> threadInfos = queryThreadInfos(tag);
+//        synchronized (_tlock){
+//            mThreadInfoDao.deleteInTx(threadInfos);
+//        }
+//    }
 
     /**
      * 查询tag的所有ThreadInfo
@@ -159,29 +166,29 @@ public class DBHelper {
      * @param tag
      * @return
      */
-    public List<ThreadInfo> queryThreadInfos(String tag) {
-        if (null == mThreadInfoDao){
-            getThreadInfoDao();
-        }
-        List<ThreadInfo> list = mThreadInfoDao.queryBuilder().where(ThreadInfoDao.Properties.Tag.eq(tag)).list();
-        return list;
-    }
+//    public List<ThreadInfo> queryThreadInfos(String tag) {
+//        if (null == mThreadInfoDao){
+//            getThreadInfoDao();
+//        }
+//        List<ThreadInfo> list = mThreadInfoDao.queryBuilder().where(ThreadInfoDao.Properties.Tag.eq(tag)).list();
+//        return list;
+//    }
 
     /**
      * 查询单个ThreadInfo
      *
      * @param tag
-     * @param id
+     * @param index
      * @return
      */
-    public ThreadInfo queryThreadInfo(String tag, String id){
-        if (null == mThreadInfoDao){
-            getThreadInfoDao();
-        }
-        ThreadInfo threadInfo = mThreadInfoDao.queryBuilder().
-                where(ThreadInfoDao.Properties.Tag.eq(tag), ThreadInfoDao.Properties.Id.eq(id)).unique();
-        return threadInfo;
-    }
+//    public ThreadInfo queryThreadInfo(String tag, String index){
+//        if (null == mThreadInfoDao){
+//            getThreadInfoDao();
+//        }
+//        ThreadInfo threadInfo = mThreadInfoDao.queryBuilder().
+//                where(ThreadInfoDao.Properties.Tag.eq(tag), ThreadInfoDao.Properties.Index.eq(index)).unique();
+//        return threadInfo;
+//    }
 
 
 

@@ -38,12 +38,12 @@ public class MutileDownloadThread extends DownloadThread {
 
     @Override
     protected void insertIntoDB(ThreadInfo threadInfo) {
-        DBHelper.getInstance().newOrUpdate(threadInfo);
+//        DBHelper.getInstance().newOrUpdate(threadInfo);
     }
 
     @Override
     protected void updateDB(ThreadInfo threadInfo) {
-        DBHelper.getInstance().newOrUpdate(threadInfo);
+//        DBHelper.getInstance().newOrUpdate(threadInfo);
     }
 
     protected RandomAccessFile getFile(File dir, String name, long offset) throws IOException {

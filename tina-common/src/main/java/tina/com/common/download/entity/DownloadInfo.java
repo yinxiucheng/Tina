@@ -26,7 +26,6 @@ import com.live_common.download.gen.DownloadInfoDao;
 public class DownloadInfo implements Serializable{
 
     static final long serialVersionUID = 42L;
-
     @Id
     public String tag;
 
@@ -55,7 +54,10 @@ public class DownloadInfo implements Serializable{
 
     public String versionCode;
 
-    @ToMany(referencedJoinProperty="tag")
+//    @ToMany(referencedJoinProperty="tag")
+//    public List<ThreadInfo> threadInfoList;
+
+    @Transient
     public List<ThreadInfo> threadInfoList;
 
     public DownloadInfo(){}
@@ -112,92 +114,13 @@ public class DownloadInfo implements Serializable{
 
     @Override
     public String toString() {
-        return fileName + ":" + finish + "/" + length + "::" + status ;
+        return fileName + ":" + getDownloadPerSize() + "::" + DownloadStatus.getStausText(status) + ":" + progress ;
     }
 
     private static final DecimalFormat DF = new DecimalFormat("0.00");
 
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-
-    /** Used for active entity operations. */
-    @Generated(hash = 1465593784)
-    private transient DownloadInfoDao myDao;
-
     public String getDownloadPerSize() {
         return DF.format((float) finish / (1024 * 1024)) + "M/" + DF.format((float) length / (1024 * 1024)) + "M";
-    }
-
-    /**
-     * To-many relationship, resolved on first access (and after reset).
-     * Changes to to-many relations are not persisted, make changes to the target entity.
-     */
-    @Generated(hash = 1847536389)
-    public List<ThreadInfo> getThreadInfoList() {
-        if (threadInfoList == null) {
-            final DaoSession daoSession = this.daoSession;
-            if (daoSession == null) {
-                throw new DaoException("Entity is detached from DAO context");
-            }
-            ThreadInfoDao targetDao = daoSession.getThreadInfoDao();
-            List<ThreadInfo> threadInfoListNew = targetDao._queryDownloadInfo_ThreadInfoList(tag);
-            synchronized (this) {
-                if (threadInfoList == null) {
-                    threadInfoList = threadInfoListNew;
-                }
-            }
-        }
-        return threadInfoList;
-    }
-
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 153469034)
-    public synchronized void resetThreadInfoList() {
-        threadInfoList = null;
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 17038220)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDownloadInfoDao() : null;
     }
 
     public void reset() {

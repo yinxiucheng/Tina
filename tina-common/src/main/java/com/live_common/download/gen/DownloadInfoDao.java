@@ -38,8 +38,6 @@ public class DownloadInfoDao extends AbstractDao<DownloadInfo, String> {
         public final static Property VersionCode = new Property(11, String.class, "versionCode", false, "VERSION_CODE");
     }
 
-    private DaoSession daoSession;
-
 
     public DownloadInfoDao(DaoConfig config) {
         super(config);
@@ -47,7 +45,6 @@ public class DownloadInfoDao extends AbstractDao<DownloadInfo, String> {
     
     public DownloadInfoDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
-        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -162,12 +159,6 @@ public class DownloadInfoDao extends AbstractDao<DownloadInfo, String> {
         if (versionCode != null) {
             stmt.bindString(12, versionCode);
         }
-    }
-
-    @Override
-    protected final void attachEntity(DownloadInfo entity) {
-        super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
     }
 
     @Override

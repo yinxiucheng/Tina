@@ -24,6 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import tina.com.common.download.DownloadManager;
+import tina.com.common.download.data.DBHelper;
 import tina.com.common.download.entity.DownloadInfo;
 import tina.com.common.download.entity.DownloadStatus;
 import tina.com.common.download.observer.DataWatcher;
@@ -63,14 +64,6 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initRecycler();
-        for (DownloadInfo info : mAppInfos) {
-//            DownloadInfo downloadInfo = DownloadManager.getInstance(getContext()).getDownloadInfo(getActivity(), info.getUrl(), info.getPackageName(), info.getVersionCode());
-//            if (downloadInfo != null) {
-//                info.setProgress(downloadInfo.getProgress());
-//                info.setDownloadPerSize(getDownloadPerSize(downloadInfo.getFinished(), downloadInfo.getLength()));
-//                info.setStatus(AppInfo.STATUS_PAUSED);
-//            }
-        }
     }
 
     @Override
@@ -84,7 +77,13 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
     }
 
     public void initRecycler(){
-        mAppInfos = DataSource.getInstance().getData();
+        //tofo 这一段应该用线程切换
+        mAppInfos = DBHelper.getInstance().queryDownloadInfoAll();
+        if (mAppInfos == null || mAppInfos.isEmpty()){
+            mAppInfos = DataSource.getInstance().getData();
+            DBHelper.getInstance().insertDownloadInfoTX(mAppInfos);
+        }
+
         mAdapter = new RecyclerViewAdapter(mAppInfos);
         mAdapter.setOnItemClickListener(this);
         mAdapter.setOnDeleteAppListener(this);
@@ -96,10 +95,7 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
     @Override
     public void onPause() {
         super.onPause();
-//        DownloadManager.getInstance(getContext()).pauseAll();
     }
-
-    private static final DecimalFormat DF = new DecimalFormat("0.00");
 
     /**
      * Dir: /Download
@@ -158,17 +154,6 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
 
     private RecyclerViewAdapter.AppViewHolder getViewHolder(int position) {
         return (RecyclerViewAdapter.AppViewHolder) recyclerView.findViewHolderForLayoutPosition(position);
-    }
-
-    private boolean isCurrentListViewItemVisible(int position) {
-        LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
-        int first = layoutManager.findFirstVisibleItemPosition();
-        int last = layoutManager.findLastVisibleItemPosition();
-        return first <= position && position <= last;
-    }
-
-    private String getDownloadPerSize(long finished, long total) {
-        return DF.format((float) finished / (1024 * 1024)) + "M/" + DF.format((float) total / (1024 * 1024)) + "M";
     }
 
     @Override

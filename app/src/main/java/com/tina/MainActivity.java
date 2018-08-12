@@ -22,17 +22,9 @@ import tina.com.common.http.utils.Utils;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     DownloadManager downloadManager;
-    DataWatcher dataWatcher;
-    DownloadInfo downloadInfo;
 
     @BindView(R.id.muti_download)
     Button mutiDownload;
-    @BindView(R.id.download)
-    Button download;
-    @BindView(R.id.pause)
-    Button pause;
-    @BindView(R.id.cancel)
-    Button cancel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,69 +53,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void init() {
-
         downloadManager = DownloadManager.getInstance(Utils.getContext());
-        dataWatcher = new DataWatcher() {
-            @Override
-            public void notifyObserver(DownloadInfo data) {
-                downloadInfo = data;
-                Trace.e(data.getFileName() + ":" + data.getFinish() + "/"
-                        + data.getLength() + ":" + data.getStatus());
-                if (data.status == DownloadStatus.CANCELED) {
-                    downloadInfo = null;
-                }
-            }
-        };
-
-        downloadInfo = new DownloadInfo();
-        downloadInfo.setFileName("test");
-        downloadInfo.setUrl("http://s1.music.126.net/download/android/CloudMusic_2.8.1_official_4.apk");
-
-        download.setOnClickListener(this);
-        pause.setOnClickListener(this);
-        cancel.setOnClickListener(this);
         mutiDownload.setOnClickListener(this);
     }
-
 
     @Override
     protected void onStart() {
         super.onStart();
-        downloadManager.addObservable(this, dataWatcher);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        downloadManager.removeObservable(this, dataWatcher);
     }
 
     @Override
     public void onClick(View v) {
-        if (null == downloadInfo) {
-            downloadInfo = new DownloadInfo();
-            downloadInfo.setFileName("test");
-            downloadInfo.setUrl("http://s1.music.126.net/download/android/CloudMusic_2.8.1_official_4.apk");
-        }
         switch (v.getId()) {
-            case R.id.download: {
-                downloadManager.download(downloadInfo);
-                break;
-            }
-            case R.id.pause: {
-                if (downloadInfo.status == DownloadStatus.PAUSED) {
-                    downloadManager.resume(downloadInfo);
-                    pause.setText("Puse");
-                } else if (downloadInfo.status == DownloadStatus.DOWNLOADING) {
-                    downloadManager.pause(downloadInfo);
-                    pause.setText("Resume");
-                }
-                break;
-            }
-            case R.id.cancel: {
-                downloadManager.cancel(downloadInfo);
-                break;
-            }
             case R.id.muti_download: {
                 Intent intent = new Intent(this, AppListActivity.class);
                 startActivity(intent);

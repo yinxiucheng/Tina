@@ -4,29 +4,43 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Generated;
 
-@Entity
+
 public class ThreadInfo {
-    @Id
-    private int id;
 
+
+    private long _id;
+
+    private int index;
     private String tag;
-
     private String url;
     private long start;
     private long end;
     private long finished;
     private int status;
 
-    public ThreadInfo(int id, String tag, String uri, long finished) {
-        this.id = id;
+    public ThreadInfo(int index, String tag, String url, long start,
+                      long end, long finished, int status) {
+        this.index = index;
         this.tag = tag;
-        this.url = uri;
+        this.url = url;
+        this.start = start;
+        this.end = end;
         this.finished = finished;
+        this.status = status;
     }
 
-    @Generated(hash = 610160239)
-    public ThreadInfo(int id, String tag, String url, long start, long end, long finished, int status) {
-        this.id = id;
+    public ThreadInfo(int index, String tag, String url, int status) {
+        this.index = index;
+        this.tag = tag;
+        this.url = url;
+        this.status = status;
+    }
+
+    @Generated(hash = 789514427)
+    public ThreadInfo(long _id, int index, String tag, String url, long start,
+            long end, long finished, int status) {
+        this._id = _id;
+        this.index = index;
         this.tag = tag;
         this.url = url;
         this.start = start;
@@ -39,76 +53,10 @@ public class ThreadInfo {
     public ThreadInfo() {
     }
 
-//    public ThreadInfo(int id, String tag, String uri, long start, long end, long finished, int status) {
-//        this.id = id;
-//        this.tag = tag;
-//        this.url = uri;
-//        this.start = start;
-//        this.end = end;
-//        this.finished = finished;
-//        this.status = status;
-//    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public long getStart() {
-        return start;
-    }
-
-    public void setStart(long start) {
-        this.start = start;
-    }
-
-    public long getEnd() {
-        return end;
-    }
-
-    public void setEnd(long end) {
-        this.end = end;
-    }
-
-    public long getFinished() {
-        return finished;
-    }
-
-    public void setFinished(long finished) {
-        this.finished = finished;
-    }
-
     @Override
     public String toString() {
         return "ThreadInfo{" +
-                "id=" + id +
+                "index =" + index +
                 ", tag='" + tag + '\'' +
                 ", url='" + url + '\'' +
                 ", start=" + start +
@@ -116,4 +64,69 @@ public class ThreadInfo {
                 ", finished=" + finished +
                 '}';
     }
+
+    public long get_id() {
+        return this._id;
+    }
+
+    public void set_id(long _id) {
+        this._id = _id;
+    }
+
+    public int getIndex() {
+        return this.index;
+    }
+
+    public void setIndex(int index) {
+        this.index = index;
+    }
+
+    public String getTag() {
+        return this.tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getUrl() {
+        return this.url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public long getStart() {
+        return this.start;
+    }
+
+    public void setStart(long start) {
+        this.start = start;
+    }
+
+    public long getEnd() {
+        return this.end;
+    }
+
+    public void setEnd(long end) {
+        this.end = end;
+    }
+
+    public long getFinished() {
+        return this.finished;
+    }
+
+    public void setFinished(long finished) {
+        this.finished = finished;
+    }
+
+    public int getStatus() {
+        return this.status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
 }

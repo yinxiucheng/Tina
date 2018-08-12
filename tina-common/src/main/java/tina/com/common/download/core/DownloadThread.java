@@ -231,7 +231,7 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
                 synchronized (mOnDownloadListener) {
                     mDownloadInfo.setFinish(mDownloadInfo.getFinish() + len);
                     mDownloadInfo.setStatus(DownloadStatus.DOWNLOADING);
-                    DBHelper.getInstance().newOrUpdate(mDownloadInfo);
+//                    DBHelper.getInstance().newOrUpdate(mDownloadInfo);
                     mOnDownloadListener.onDownloadProgress(mDownloadInfo.getFinish(), mDownloadInfo.getLength());
                 }
             } catch (IOException e) {

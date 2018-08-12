@@ -72,7 +72,7 @@ public class DataChanger extends Observable {
     public void deleteDownloadEntry(String tag){
         mOperateDownloadInfoList.remove(tag);
         //todo 数据库删除
-      DBHelper.getInstance().deleteDownloadInfoByTag(tag);
+//      DBHelper.getInstance().deleteDownloadInfoByTag(tag);
     }
 
 

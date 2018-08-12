@@ -18,7 +18,7 @@ import tina.com.common.download.entity.ThreadInfo;
 /** 
  * DAO for table "THREAD_INFO".
 */
-public class ThreadInfoDao extends AbstractDao<ThreadInfo, Integer> {
+public class ThreadInfoDao extends AbstractDao<ThreadInfo, Long> {
 
     public static final String TABLENAME = "THREAD_INFO";
 
@@ -27,13 +27,14 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Integer> {
      * Can be used for QueryBuilder and for referencing column names.
      */
     public static class Properties {
-        public final static Property Id = new Property(0, int.class, "id", true, "ID");
-        public final static Property Tag = new Property(1, String.class, "tag", false, "TAG");
-        public final static Property Url = new Property(2, String.class, "url", false, "URL");
-        public final static Property Start = new Property(3, long.class, "start", false, "START");
-        public final static Property End = new Property(4, long.class, "end", false, "END");
-        public final static Property Finished = new Property(5, long.class, "finished", false, "FINISHED");
-        public final static Property Status = new Property(6, int.class, "status", false, "STATUS");
+        public final static Property _id = new Property(0, long.class, "_id", true, "_id");
+        public final static Property Index = new Property(1, int.class, "index", false, "INDEX");
+        public final static Property Tag = new Property(2, String.class, "tag", false, "TAG");
+        public final static Property Url = new Property(3, String.class, "url", false, "URL");
+        public final static Property Start = new Property(4, long.class, "start", false, "START");
+        public final static Property End = new Property(5, long.class, "end", false, "END");
+        public final static Property Finished = new Property(6, long.class, "finished", false, "FINISHED");
+        public final static Property Status = new Property(7, int.class, "status", false, "STATUS");
     }
 
     private Query<ThreadInfo> downloadInfo_ThreadInfoListQuery;
@@ -50,13 +51,14 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Integer> {
     public static void createTable(Database db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"THREAD_INFO\" (" + //
-                "\"ID\" INTEGER PRIMARY KEY NOT NULL ," + // 0: id
-                "\"TAG\" TEXT," + // 1: tag
-                "\"URL\" TEXT," + // 2: url
-                "\"START\" INTEGER NOT NULL ," + // 3: start
-                "\"END\" INTEGER NOT NULL ," + // 4: end
-                "\"FINISHED\" INTEGER NOT NULL ," + // 5: finished
-                "\"STATUS\" INTEGER NOT NULL );"); // 6: status
+                "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL ," + // 0: _id
+                "\"INDEX\" INTEGER NOT NULL ," + // 1: index
+                "\"TAG\" TEXT," + // 2: tag
+                "\"URL\" TEXT," + // 3: url
+                "\"START\" INTEGER NOT NULL ," + // 4: start
+                "\"END\" INTEGER NOT NULL ," + // 5: end
+                "\"FINISHED\" INTEGER NOT NULL ," + // 6: finished
+                "\"STATUS\" INTEGER NOT NULL );"); // 7: status
     }
 
     /** Drops the underlying database table. */
@@ -68,82 +70,87 @@ public class ThreadInfoDao extends AbstractDao<ThreadInfo, Integer> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, ThreadInfo entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+        stmt.bindLong(1, entity.get_id());
+        stmt.bindLong(2, entity.getIndex());
  
         String tag = entity.getTag();
         if (tag != null) {
-            stmt.bindString(2, tag);
+            stmt.bindString(3, tag);
         }
  
         String url = entity.getUrl();
         if (url != null) {
-            stmt.bindString(3, url);
+            stmt.bindString(4, url);
         }
-        stmt.bindLong(4, entity.getStart());
-        stmt.bindLong(5, entity.getEnd());
-        stmt.bindLong(6, entity.getFinished());
-        stmt.bindLong(7, entity.getStatus());
+        stmt.bindLong(5, entity.getStart());
+        stmt.bindLong(6, entity.getEnd());
+        stmt.bindLong(7, entity.getFinished());
+        stmt.bindLong(8, entity.getStatus());
     }
 
     @Override
     protected final void bindValues(SQLiteStatement stmt, ThreadInfo entity) {
         stmt.clearBindings();
-        stmt.bindLong(1, entity.getId());
+        stmt.bindLong(1, entity.get_id());
+        stmt.bindLong(2, entity.getIndex());
  
         String tag = entity.getTag();
         if (tag != null) {
-            stmt.bindString(2, tag);
+            stmt.bindString(3, tag);
         }
  
         String url = entity.getUrl();
         if (url != null) {
-            stmt.bindString(3, url);
+            stmt.bindString(4, url);
         }
-        stmt.bindLong(4, entity.getStart());
-        stmt.bindLong(5, entity.getEnd());
-        stmt.bindLong(6, entity.getFinished());
-        stmt.bindLong(7, entity.getStatus());
+        stmt.bindLong(5, entity.getStart());
+        stmt.bindLong(6, entity.getEnd());
+        stmt.bindLong(7, entity.getFinished());
+        stmt.bindLong(8, entity.getStatus());
     }
 
     @Override
-    public Integer readKey(Cursor cursor, int offset) {
-        return cursor.getInt(offset + 0);
+    public Long readKey(Cursor cursor, int offset) {
+        return cursor.getLong(offset + 0);
     }    
 
     @Override
     public ThreadInfo readEntity(Cursor cursor, int offset) {
         ThreadInfo entity = new ThreadInfo( //
-            cursor.getInt(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // tag
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // url
-            cursor.getLong(offset + 3), // start
-            cursor.getLong(offset + 4), // end
-            cursor.getLong(offset + 5), // finished
-            cursor.getInt(offset + 6) // status
+            cursor.getLong(offset + 0), // _id
+            cursor.getInt(offset + 1), // index
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // tag
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // url
+            cursor.getLong(offset + 4), // start
+            cursor.getLong(offset + 5), // end
+            cursor.getLong(offset + 6), // finished
+            cursor.getInt(offset + 7) // status
         );
         return entity;
     }
      
     @Override
     public void readEntity(Cursor cursor, ThreadInfo entity, int offset) {
-        entity.setId(cursor.getInt(offset + 0));
-        entity.setTag(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setUrl(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setStart(cursor.getLong(offset + 3));
-        entity.setEnd(cursor.getLong(offset + 4));
-        entity.setFinished(cursor.getLong(offset + 5));
-        entity.setStatus(cursor.getInt(offset + 6));
+        entity.set_id(cursor.getLong(offset + 0));
+        entity.setIndex(cursor.getInt(offset + 1));
+        entity.setTag(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setUrl(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setStart(cursor.getLong(offset + 4));
+        entity.setEnd(cursor.getLong(offset + 5));
+        entity.setFinished(cursor.getLong(offset + 6));
+        entity.setStatus(cursor.getInt(offset + 7));
      }
     
     @Override
-    protected final Integer updateKeyAfterInsert(ThreadInfo entity, long rowId) {
-        return entity.getId();
+    protected final Long updateKeyAfterInsert(ThreadInfo entity, long rowId) {
+        entity.set_id(rowId);
+        return rowId;
     }
     
     @Override
-    public Integer getKey(ThreadInfo entity) {
+    public Long getKey(ThreadInfo entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.get_id();
         } else {
             return null;
         }

@@ -204,7 +204,7 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
 
     //
     private List<ThreadInfo> getMultiThreadInfos(long length) {
-        List<ThreadInfo> threadInfos = DBHelper.getInstance().queryThreadInfos(mDownloadInfo.getTag());
+        List<ThreadInfo> threadInfos = null;
         if (null == threadInfos){
             threadInfos = new ArrayList<>();
         }
@@ -222,7 +222,7 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
                 }
                 ThreadInfo threadInfo = new ThreadInfo(i, mDownloadInfo.getTag(), mDownloadInfo.getUrl(), start, end, 0, 0);
                 threadInfos.add(threadInfo);
-                DBHelper.getInstance().newOrUpdate(threadInfo);
+//                DBHelper.getInstance().newOrUpdate(threadInfo);
             }
         }
         return threadInfos;
@@ -236,7 +236,7 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
 
     @Override
     public void onDownloadProgress(long finished, long length) {
-        final int percent = (int)finished * 100 / (int)length;
+        final int percent = (int) (finished * 100 / length);
         mDownloadInfo.setProgress(percent);
         setStatusAndNotify(DownloadStatus.DOWNLOADING, DownloadService.NOTIFY_DOWNLOADING);
 
@@ -322,7 +322,7 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
     }
 
     private void deleteFromDB() {
-        DBHelper.getInstance().deleteThreadInfoByTag(mDownloadInfo.getTag());
+//        DBHelper.getInstance().deleteThreadInfoByTag(mDownloadInfo.getTag());
         DBHelper.getInstance().deleteDownloadInfoByTag(mDownloadInfo.getTag());
     }
 
