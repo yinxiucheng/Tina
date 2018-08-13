@@ -1,10 +1,14 @@
 package tina.com.common.download.entity;
 
+import com.live_common.download.gen.DaoSession;
+import com.live_common.download.gen.DownloadInfoDao;
+import com.live_common.download.gen.ThreadInfoDao;
+
+import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.OrderBy;
 import org.greenrobot.greendao.annotation.ToMany;
-import org.greenrobot.greendao.annotation.Transient;
 
 import java.io.File;
 import java.io.Serializable;
@@ -12,11 +16,6 @@ import java.text.DecimalFormat;
 import java.util.List;
 
 import tina.com.common.download.utils.DownloadConfig;
-import org.greenrobot.greendao.annotation.Generated;
-import org.greenrobot.greendao.DaoException;
-import com.live_common.download.gen.DaoSession;
-import com.live_common.download.gen.ThreadInfoDao;
-import com.live_common.download.gen.DownloadInfoDao;
 
 /**
  * @author yxc
@@ -41,9 +40,6 @@ public class DownloadInfo implements Serializable{
 
     public int status;
 
-    @Transient
-    public File dir;
-
     public int progress;
 
     public String name;
@@ -61,13 +57,12 @@ public class DownloadInfo implements Serializable{
     
     public DownloadInfo(){}
 
-    public DownloadInfo(int index, String name, String fileName, String iamge, String url,File file) {
+    public DownloadInfo(int index, String name, String fileName, String iamge, String url) {
         this.index = index;
         this.name = name;
         this.fileName = fileName;
         this.image = iamge;
         this.url = url;
-        this.dir = file;
     }
 
     @Generated(hash = 146078028)
@@ -96,11 +91,6 @@ public class DownloadInfo implements Serializable{
     @Override
     public int hashCode() {
         return url.hashCode();
-    }
-
-
-    public File getDir(){
-        return dir;
     }
 
     public String getTag() {

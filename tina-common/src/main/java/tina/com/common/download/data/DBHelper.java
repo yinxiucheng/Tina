@@ -127,7 +127,7 @@ public class DBHelper {
         if (null == mThreadInfoDao){
             getThreadInfoDao();
         }
-        mThreadInfoDao.insertInTx(threadInfos, true);
+        mThreadInfoDao.insertOrReplaceInTx(threadInfos, true);
     }
 
     public void newOrUpdateThreadInfo(ThreadInfo threadInfo){

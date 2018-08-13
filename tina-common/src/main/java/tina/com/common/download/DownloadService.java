@@ -79,7 +79,10 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
 
             DownloadInfo downloadInfo = (DownloadInfo) msg.obj;
             if (null != downloadInfo){
-                if (downloadInfo.status == DownloadStatus.COMPLETED){
+                if (downloadInfo.status == DownloadStatus.COMPLETED
+                        || downloadInfo.status == DownloadStatus.FAILED
+                        || downloadInfo.status == DownloadStatus.PAUSED
+                        || downloadInfo.status == DownloadStatus.CANCELED){
                     mDownloadingTaskList.remove(downloadInfo.getUrl());
                 }
                 mDataChanger.postStatus(downloadInfo);
@@ -259,13 +262,9 @@ public class DownloadService extends Service implements Downloader.OnDownloaderD
     }
 
     private void download(DownloadInfo downloadInfo) {
-        if (null != downloadInfo && downloadInfo.status == DownloadStatus.IDLE
-                || downloadInfo.status == DownloadStatus.PAUSED || downloadInfo.status == DownloadStatus.WAITING) {
-
-            DownloadTask task = new DownloadTask(downloadInfo, mHandler, executor, this);
-            mDownloadingTaskList.put(downloadInfo.url, task);
-            task.start();
-        }
+        DownloadTask task = new DownloadTask(downloadInfo, mHandler, executor, this);
+        mDownloadingTaskList.put(downloadInfo.url, task);
+        task.start();
     }
 
     private void addDownloadQueue(DownloadInfo downloadInfo) {

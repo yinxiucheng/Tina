@@ -19,6 +19,7 @@ import tina.com.common.download.entity.DownloadInfo;
 import tina.com.common.download.entity.DownloadStatus;
 import tina.com.common.download.entity.ThreadInfo;
 import tina.com.common.download.utils.Constants;
+import tina.com.common.download.utils.DownloadConfig;
 import tina.com.common.download.utils.IOCloseUtils;
 
 /**
@@ -186,7 +187,7 @@ public abstract class DownloadThread implements Runnable, DownloadInterface{
             }
             final long offset = mThreadInfo.getStart() + mThreadInfo.getFinished();
             try {
-                raf = getFile(mDownloadInfo.getDir(), mDownloadInfo.getFileName(), offset);
+                raf = getFile(DownloadConfig.getInstance().getDownloadDir(), mDownloadInfo.getFileName(), offset);
             } catch (IOException e) {
                 throw new DownloadException(DownloadStatus.FAILED, "File error", e);
             }

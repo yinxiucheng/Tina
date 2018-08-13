@@ -46,7 +46,7 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
         @Override
         public void notifyObserver(DownloadInfo data) {
             int index = mAppInfos.indexOf(data);
-            if (index != -1){
+            if (index != -1) {
                 mAppInfos.remove(data);
                 mAppInfos.add(index, data);
                 mAdapter.notifyItemChanged(index, "payload");
@@ -76,10 +76,10 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
         return view;
     }
 
-    public void initRecycler(){
+    public void initRecycler() {
         //tofo 这一段应该用线程切换
         mAppInfos = DBHelper.getInstance().queryDownloadInfoAll();
-        if (mAppInfos == null || mAppInfos.isEmpty()){
+        if (mAppInfos == null || mAppInfos.isEmpty()) {
             mAppInfos = DataSource.getInstance().getData();
             DBHelper.getInstance().insertDownloadInfoTX(mAppInfos);
         }
@@ -107,13 +107,18 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
         Trace.e("appInfo's Status:" + appInfo.getStatus());
         if (appInfo.getStatus() == DownloadStatus.DOWNLOADING) {
             pause(appInfo);
-        } else if (appInfo.getStatus() == DownloadStatus.IDLE || appInfo.getStatus() == DownloadStatus.PAUSED){
-            download(appInfo);
-        }else if (appInfo.getStatus() == DownloadStatus.COMPLETED) {
+        } else if (appInfo.getStatus() == DownloadStatus.COMPLETED) {
             install(appInfo);
         } else if (appInfo.getStatus() == DownloadStatus.INSTALLED) {
             unInstall(appInfo);
+        } else if (appInfo.getStatus() == DownloadStatus.IDLE
+                || appInfo.getStatus() == DownloadStatus.PAUSED
+                || appInfo.getStatus() == DownloadStatus.CANCELED
+                || appInfo.getStatus() == DownloadStatus.FAILED
+                || appInfo.getStatus() == DownloadStatus.WAITING) {
+            download(appInfo);
         } else {
+            download(appInfo);
             Trace.e("error status");
         }
     }
@@ -163,16 +168,16 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
         unbinder.unbind();
     }
 
-    public void pauseAll(){
+    public void pauseAll() {
         DownloadManager.getInstance(getContext()).pauseAll();
     }
 
-    public void recoverAll(){
+    public void recoverAll() {
         DownloadManager.getInstance(getContext()).recoverAll();
     }
 
 
-    public void cancelAll(){
+    public void cancelAll() {
         DownloadManager.getInstance(getContext()).cancelAll();
     }
 

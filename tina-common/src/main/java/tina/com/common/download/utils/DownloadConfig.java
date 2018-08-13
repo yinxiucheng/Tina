@@ -1,8 +1,6 @@
 package tina.com.common.download.utils;
 
-import android.os.Build;
 import android.os.Environment;
-import android.os.StatFs;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -13,9 +11,9 @@ import java.io.File;
 
 public class DownloadConfig {
 
-    public static String downloadPath = "";
+    private String downloadPath = "";
 
-    public File dwonloadDir;
+    private File dwonloadDir;
 
     private static final String DOWNLOAD_DIR = "download";
 

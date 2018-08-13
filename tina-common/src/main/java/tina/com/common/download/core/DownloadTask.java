@@ -331,7 +331,7 @@ public class DownloadTask implements Downloader, ConnectThread.OnConnectListener
     }
 
     private void deleteFile() {
-        File file = new File(mDownloadInfo.getDir(), mDownloadInfo.getFileName());
+        File file = new File(DownloadConfig.getInstance().getDownloadDir(), mDownloadInfo.getFileName());
         if (file.exists() && file.isFile()) {
             file.delete();
         }
